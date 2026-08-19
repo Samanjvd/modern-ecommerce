@@ -1,3 +1,4 @@
+import { cn } from '@/utils/cn';
 import type { InputHTMLAttributes } from 'react';
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
@@ -25,11 +26,13 @@ export function Input({
 
       <input
         id={id}
-        className={`h-11 w-full rounded-[var(--radius-md)] border bg-[var(--color-surface)] px-4 text-sm text-[var(--color-text)] transition-all outline-none placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-3 focus:ring-[var(--color-primary-light)] ${
+        className={cn(
+          'h-11 w-full rounded-[var(--radius-md)] border bg-[var(--color-surface)] px-4 text-sm text-[var(--color-text)] transition-all outline-none placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-3 focus:ring-[var(--color-primary-light)]',
           error
             ? 'border-[var(--color-error)] focus:border-[var(--color-error)] focus:ring-red-100'
-            : 'border-[var(--color-border)]'
-        } ${className}`}
+            : 'border-[var(--color-border)]',
+          className,
+        )}
         {...props}
       />
 

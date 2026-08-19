@@ -105,9 +105,12 @@ export function Header() {
           <div className="pb-4 md:hidden">
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
+              aria-label="باز کردن جستجو"
+              aria-controls="search-modal"
+              aria-expanded={searchOpen}
               onClick={() => setSearchOpen(true)}
-              className="flex h-12 w-full items-center justify-start gap-3 rounded-[var(--radius-lg)] bg-zinc-100 px-4 text-right text-sm text-[var(--color-text-muted)]"
+              className="h-12 w-full justify-start rounded-[var(--radius-lg)] bg-zinc-100 px-4 text-right text-sm font-normal text-[var(--color-text-muted)] hover:bg-zinc-200 hover:text-[var(--color-text-muted)]"
             >
               <Search size={19} />
 

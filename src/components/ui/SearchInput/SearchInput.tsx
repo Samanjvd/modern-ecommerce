@@ -1,6 +1,7 @@
 import { Search, X } from 'lucide-react';
 import type { ChangeEvent, InputHTMLAttributes } from 'react';
-import { Button } from '../Button';
+import { Button } from '@/components/ui/Button';
+import { cn } from '@/utils/cn';
 
 type SearchInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -30,6 +31,7 @@ export function SearchInput({
     <div className="relative w-full">
       <Search
         size={20}
+        aria-hidden="true"
         className="absolute top-1/2 right-4 -translate-y-1/2 text-[var(--color-text-muted)]"
       />
 
@@ -38,7 +40,10 @@ export function SearchInput({
         type="text"
         value={value}
         onChange={handleChange}
-        className={`h-12 w-full rounded-[var(--radius-lg)] border border-transparent bg-zinc-100 pr-12 pl-4 text-sm transition-all outline-none placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-white focus:ring-3 focus:ring-[var(--color-primary-light)] ${className}`}
+        className={cn(
+          'h-12 w-full rounded-[var(--radius-lg)] border border-transparent bg-zinc-100 pr-12 pl-4 text-sm transition-all outline-none placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:bg-white focus:ring-3 focus:ring-[var(--color-primary-light)]',
+          className,
+        )}
       />
 
       {hasValue && (

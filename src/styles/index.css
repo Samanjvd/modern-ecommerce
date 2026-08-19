@@ -7,7 +7,7 @@ html {
 
 @font-face {
   font-family: 'Vazir';
-  src: url('../assets/fonts/vazir/Vazir-Bold.woff2') format('woff2');
+  src: url('../assets/fonts/vazir/Vazir.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;

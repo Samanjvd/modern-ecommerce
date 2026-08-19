@@ -13,7 +13,8 @@ export function ProductCard({
   onAddToCart,
   onFavorite,
 }: ProductCardProps) {
-  const hasDiscount = Boolean(product.discountPrice);
+  const discountPrice = product.discountPrice;
+  const hasDiscount = discountPrice !== undefined;
 
   return (
     <article className="group relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]">
@@ -49,6 +50,7 @@ export function ProductCard({
           <Star
             size={15}
             fill="currentColor"
+            aria-hidden="true"
             className="text-[var(--color-accent)]"
           />
 
@@ -68,13 +70,15 @@ export function ProductCard({
                 </span>
 
                 <span className="text-base font-bold text-[var(--color-text)]">
-                  {product.discountPrice!.toLocaleString('fa-IR')} تومان
+                  {discountPrice.toLocaleString('fa-IR')} تومان
                 </span>
               </div>
 
-              <span className="rounded-full bg-[var(--color-primary-light)] px-2.5 py-1 text-xs font-bold text-[var(--color-primary)]">
-                {product.discount}٪ تخفیف
-              </span>
+              {product.discount !== undefined && (
+                <span className="rounded-full bg-[var(--color-primary-light)] px-2.5 py-1 text-xs font-bold text-[var(--color-primary)]">
+                  {product.discount}٪ تخفیف
+                </span>
+              )}
             </div>
           ) : (
             <span className="text-base font-bold text-[var(--color-text)]">
@@ -88,9 +92,9 @@ export function ProductCard({
           size="lg"
           disabled={product.stock === 0}
           onClick={() => onAddToCart?.(product)}
-          className="flex w-full gap-1"
+          className="w-full gap-1"
         >
-          <ShoppingCart size={18} />
+          <ShoppingCart size={18} aria-hidden="true" />
 
           {product.stock > 0 ? 'افزودن به سبد' : 'ناموجود'}
         </Button>
