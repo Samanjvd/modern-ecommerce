@@ -6,24 +6,31 @@ type ProductCardProps = {
   product: Product;
   onAddToCart?: (product: Product) => void;
   onFavorite?: (product: Product) => void;
+  onProductClick?: (product: Product) => void;
 };
 
 export function ProductCard({
   product,
   onAddToCart,
   onFavorite,
+  onProductClick,
 }: ProductCardProps) {
-  const discountPrice = product.discountPrice;
-  const hasDiscount = discountPrice !== undefined;
+  const hasDiscount = Boolean(product.discountPrice);
 
   return (
-    <article className="group relative overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]">
-      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[var(--radius-md)] bg-zinc-50">
+    <article
+      onClick={() => onProductClick?.(product)}
+      className="group relative cursor-pointer overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]"
+    >
+      <div className="relative z-10 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[var(--radius-md)] bg-zinc-50">
         <Button
           type="button"
           variant="ghost"
           size="icon"
-          onClick={() => onFavorite?.(product)}
+          onClick={(event) => {
+            event.stopPropagation();
+            onFavorite?.(product);
+          }}
           aria-label="افزودن به علاقه‌مندی‌ها"
           className="absolute top-3 left-3 z-10 rounded-full bg-white text-zinc-500 shadow-sm hover:text-[var(--color-error)]"
         >
@@ -37,7 +44,7 @@ export function ProductCard({
         />
       </div>
 
-      <div className="flex flex-col gap-3 px-1 pt-4">
+      <div className="relative z-10 flex flex-col gap-3 px-1 pt-4">
         <span className="text-xs text-[var(--color-text-muted)]">
           {product.category}
         </span>
@@ -50,7 +57,6 @@ export function ProductCard({
           <Star
             size={15}
             fill="currentColor"
-            aria-hidden="true"
             className="text-[var(--color-accent)]"
           />
 
@@ -70,15 +76,13 @@ export function ProductCard({
                 </span>
 
                 <span className="text-base font-bold text-[var(--color-text)]">
-                  {discountPrice.toLocaleString('fa-IR')} تومان
+                  {product.discountPrice!.toLocaleString('fa-IR')} تومان
                 </span>
               </div>
 
-              {product.discount !== undefined && (
-                <span className="rounded-full bg-[var(--color-primary-light)] px-2.5 py-1 text-xs font-bold text-[var(--color-primary)]">
-                  {product.discount}٪ تخفیف
-                </span>
-              )}
+              <span className="rounded-full bg-[var(--color-primary-light)] px-2.5 py-1 text-xs font-bold text-[var(--color-primary)]">
+                {product.discount}٪ تخفیف
+              </span>
             </div>
           ) : (
             <span className="text-base font-bold text-[var(--color-text)]">
@@ -91,10 +95,13 @@ export function ProductCard({
           type="button"
           size="lg"
           disabled={product.stock === 0}
-          onClick={() => onAddToCart?.(product)}
-          className="w-full gap-1"
+          onClick={(event) => {
+            event.stopPropagation();
+            onAddToCart?.(product);
+          }}
+          className="flex w-full gap-1"
         >
-          <ShoppingCart size={18} aria-hidden="true" />
+          <ShoppingCart size={18} />
 
           {product.stock > 0 ? 'افزودن به سبد' : 'ناموجود'}
         </Button>

@@ -1,10 +1,6 @@
 @import 'tailwindcss';
 @import './tokens.css';
 
-html {
-  direction: rtl;
-}
-
 @font-face {
   font-family: 'Vazir';
   src: url('../assets/fonts/vazir/Vazir.woff2') format('woff2');
@@ -29,6 +25,10 @@ html {
   font-display: swap;
 }
 
+html {
+  direction: rtl;
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -42,4 +42,12 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }

@@ -1,6 +1,8 @@
 import { Header } from '@/components/layout/Header';
-import { CategorySection } from '@/features/home/components/CategorySection';
-import { HeroSlider } from '@/features/home/components/HeroSlider';
+import { CategorySection } from '@/features/home/CategorySection';
+import { DiscountSection } from '@/features/home/DiscountSection';
+import { FeaturedProducts } from '@/features/home/FeaturedProducts';
+import { HeroSlider } from '@/features/home/HeroSlider';
 
 export function Home() {
   return (
@@ -10,8 +12,8 @@ export function Home() {
       <main>
         <HeroSlider />
         <CategorySection />
-        {/* <FeaturedProducts /> */}
-        {/* <DiscountSection /> */}
+        <FeaturedProducts />
+        <DiscountSection />
         {/* <PromoBanner /> */}
         {/* <PopularProducts /> */}
         {/* <FeaturesSection /> */}
