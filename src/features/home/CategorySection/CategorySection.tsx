@@ -4,7 +4,7 @@ import { categories } from '@/data/categories';
 
 export function CategorySection() {
   return (
-    <section className="w-full px-4 py-6">
+    <section className="w-full px-4 py-6 md:px-16">
       <div className="mb-5 flex items-center justify-between">
         <h2 className="text-lg font-bold text-[var(--color-text)] md:text-xl">
           دسته‌بندی‌ها

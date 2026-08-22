@@ -1,14 +1,12 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
 
-import { products } from '@/data/products';
+import { popularProducts } from '@/data/popularProducts';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
 
-export function FeaturedProducts() {
+export function PopularProducts() {
   const sliderRef = useRef<HTMLDivElement>(null);
-
-  const featuredProducts = products.slice(0, 12);
 
   const scroll = (direction: 'next' | 'prev') => {
     if (!sliderRef.current) return;
@@ -24,9 +22,15 @@ export function FeaturedProducts() {
   return (
     <section className="w-full px-4 py-6 md:px-16">
       <div className="mb-5 flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[var(--color-text)] md:text-xl">
-          پیشنهادهای ویژه
-        </h2>
+        <div>
+          <h2 className="text-lg font-bold text-[var(--color-text)] md:text-xl">
+            محبوب‌ترین محصولات
+          </h2>
+
+          <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+            محصولاتی که بیشتر از همه انتخاب شده‌اند
+          </p>
+        </div>
 
         <div className="hidden items-center gap-2 md:flex">
           <Button
@@ -55,7 +59,7 @@ export function FeaturedProducts() {
         ref={sliderRef}
         className="flex [scrollbar-width:none] gap-3 overflow-x-auto scroll-smooth pb-2 [&::-webkit-scrollbar]:hidden"
       >
-        {featuredProducts.map((product) => (
+        {popularProducts.map((product) => (
           <div
             key={product.id}
             className="w-[75%] shrink-0 sm:w-[42%] md:w-[31%] lg:w-[23%] xl:w-[19%]"

@@ -28,7 +28,7 @@ export function DiscountSection() {
   }
 
   return (
-    <section className="mx-4 my-6 overflow-hidden rounded-[var(--radius-xl)] bg-[var(--color-primary)] px-4 py-5 md:px-6">
+    <section className="mx-4 my-6 overflow-hidden rounded-[var(--radius-xl)] bg-[var(--color-primary)] px-4 py-5 md:mx-16 md:px-6">
       <div className="mb-5 flex items-center justify-between">
         <div className="flex items-center gap-2 text-white">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15">
