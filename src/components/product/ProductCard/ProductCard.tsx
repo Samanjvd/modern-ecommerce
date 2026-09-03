@@ -15,14 +15,16 @@ export function ProductCard({
   onFavorite,
   onProductClick,
 }: ProductCardProps) {
-  const hasDiscount = Boolean(product.discountPrice);
+  const hasDiscount =
+    product.discountPrice !== undefined &&
+    product.discountPrice < product.price;
 
   return (
     <article
       onClick={() => onProductClick?.(product)}
-      className="group relative cursor-pointer overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]"
+      className="group relative flex min-h-[430px] cursor-pointer flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]"
     >
-      <div className="relative z-10 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[var(--radius-md)] bg-zinc-50">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-lg)] bg-zinc-50">
         <Button
           type="button"
           variant="ghost"
@@ -31,16 +33,29 @@ export function ProductCard({
             event.stopPropagation();
             onFavorite?.(product);
           }}
-          aria-label="افزودن به علاقه‌مندی‌ها"
-          className="absolute top-3 left-3 z-10 rounded-full bg-white text-zinc-500 shadow-sm hover:text-[var(--color-error)]"
+          className="absolute top-3 left-3 z-20 h-9 w-9 rounded-full bg-white/90 text-zinc-600 shadow-sm backdrop-blur transition-all duration-300 hover:scale-110 hover:text-[var(--color-error)]"
         >
           <Heart size={18} />
         </Button>
 
+        <div className="absolute top-16 left-3 z-20 flex flex-col gap-1.5">
+          {product.colors.slice(0, 4).map((color) => (
+            <span
+              key={color.name}
+              title={color.name}
+              className="h-5 w-5 rounded-full border-2 border-white shadow-sm ring-1 ring-black/10"
+              style={{
+                backgroundColor: color.value,
+              }}
+            />
+          ))}
+        </div>
+
         <img
           src={product.image}
           alt={product.title}
-          className="h-full w-full object-contain p-6 transition-transform duration-300 group-hover:scale-105"
+          draggable={false}
+          className="h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
         />
       </div>
 

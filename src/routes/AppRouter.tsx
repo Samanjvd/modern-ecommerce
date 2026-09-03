@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import { PublicLayout } from '@/layouts/PublicLayout';
 import { Home } from '@/pages/Home';
+import { ProductListPage } from '@/pages/Products/ProductListPage';
+import { ProductDetailPage } from '@/pages/Products/ProductDetailPage';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -18,15 +20,9 @@ export function AppRouter() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
 
-          <Route
-            path="/products"
-            element={<PlaceholderPage title="محصولات" />}
-          />
+          <Route path="/products" element={<ProductListPage />} />
 
-          <Route
-            path="/product/:id"
-            element={<PlaceholderPage title="جزئیات محصول" />}
-          />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
 
           <Route
             path="/categories/:slug"

@@ -13,14 +13,15 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)]',
+    'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-dark)] disabled:bg-[var(--color-border)] disabled:text-[var(--color-text-muted)]',
   secondary:
-    'bg-[var(--color-primary-light)] text-[var(--color-primary)] hover:bg-[var(--color-primary-light)]',
+    'bg-[var(--color-primary-light)] text-[var(--color-primary)] hover:bg-[var(--color-primary-light)] disabled:bg-[var(--color-border)] disabled:text-[var(--color-text-muted)]',
   outline:
-    'border border-[var(--color-border)] bg-transparent text-[var(--color-text)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]',
+    'border border-[var(--color-border)] bg-transparent text-[var(--color-text)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] disabled:border-[var(--color-border)] disabled:bg-[var(--color-background)] disabled:text-[var(--color-text-muted)]',
   ghost:
-    'bg-transparent text-[var(--color-text)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)]',
-  danger: 'bg-[var(--color-error)] text-white hover:opacity-90',
+    'bg-transparent text-[var(--color-text)] hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)] disabled:bg-transparent disabled:text-[var(--color-text-muted)]',
+  danger:
+    'bg-[var(--color-error)] text-white hover:opacity-90 disabled:bg-[var(--color-border)] disabled:text-[var(--color-text-muted)]',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -45,7 +46,7 @@ export function Button({
       className={cn(
         'inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-md)] font-medium transition-all outline-none',
         'focus-visible:ring-3 focus-visible:ring-[var(--color-primary-light)]',
-        'disabled:pointer-events-none disabled:opacity-50',
+        'disabled:pointer-events-none disabled:cursor-not-allowed',
         variantClasses[variant],
         sizeClasses[size],
         className,
