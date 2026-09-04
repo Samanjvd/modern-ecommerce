@@ -10,12 +10,16 @@ import { useState } from 'react';
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
 import { SearchModal } from '@/components/search/searchModal';
+import { Link } from 'react-router-dom';
+import { useCartStore } from '@/stores/cartStore';
 
 export function Header() {
   const [search, setSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const cartCount = 2;
+  const cartItems = useCartStore((state) => state.items);
+
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <>
@@ -66,20 +70,23 @@ export function Header() {
                 <Moon size={20} />
               </Button>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="سبد خرید"
-                className="relative"
-              >
-                <ShoppingCart size={21} />
+              <Link to="/cart" aria-label="سبد خرید">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="سبد خرید"
+                  className="relative"
+                >
+                  <ShoppingCart size={21} />
 
-                {cartCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-primary)] px-1 text-[10px] leading-none text-white">
-                    {cartCount}
-                  </span>
-                )}
-              </Button>
+                  {cartCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-primary)] px-1 text-[10px] leading-none text-white">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
               <Button
                 type="button"

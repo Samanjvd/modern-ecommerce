@@ -1,5 +1,3 @@
-import { useState } from 'react';
-
 import type { ProductColor } from '@/types/Product';
 
 type ProductColorSelectorProps = {
@@ -13,18 +11,11 @@ export function ProductColorSelector({
   value,
   onChange,
 }: ProductColorSelectorProps) {
-  const [selectedColor, setSelectedColor] = useState<ProductColor>(
-    value ?? colors[0],
-  );
-
   if (!colors.length) {
     return null;
   }
 
-  const handleSelect = (color: ProductColor) => {
-    setSelectedColor(color);
-    onChange?.(color);
-  };
+  const selectedColor = value ?? colors[0];
 
   return (
     <div>
@@ -44,7 +35,7 @@ export function ProductColorSelector({
             <button
               key={color.value}
               type="button"
-              onClick={() => handleSelect(color)}
+              onClick={() => onChange?.(color)}
               className={`flex items-center gap-2 rounded-[var(--radius-md)] border px-3 py-2 text-xs transition-all duration-200 ${
                 isSelected
                   ? 'border-[var(--color-primary)] bg-[var(--color-primary-light)] text-[var(--color-primary)] ring-1 ring-[var(--color-primary)]'
@@ -55,7 +46,9 @@ export function ProductColorSelector({
               <span
                 aria-hidden="true"
                 className="h-4 w-4 rounded-full border border-black/10"
-                style={{ backgroundColor: color.value }}
+                style={{
+                  backgroundColor: color.value,
+                }}
               />
 
               {color.name}

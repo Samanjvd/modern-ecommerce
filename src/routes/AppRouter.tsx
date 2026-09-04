@@ -4,6 +4,7 @@ import { PublicLayout } from '@/layouts/PublicLayout';
 import { Home } from '@/pages/Home';
 import { ProductListPage } from '@/pages/Products/ProductListPage';
 import { ProductDetailPage } from '@/pages/Products/ProductDetailPage';
+import { CartPage } from '@/pages/Cart';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -34,7 +35,7 @@ export function AppRouter() {
             element={<PlaceholderPage title="نتایج جستجو" />}
           />
 
-          <Route path="/cart" element={<PlaceholderPage title="سبد خرید" />} />
+          <Route path="/cart" element={<CartPage />} />
 
           <Route
             path="/checkout"

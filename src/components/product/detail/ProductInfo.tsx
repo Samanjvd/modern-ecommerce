@@ -1,7 +1,8 @@
 import { Heart, Star } from 'lucide-react';
 import { useState } from 'react';
 
-import type { Product } from '@/types/Product';
+import type { Product, ProductColor } from '@/types/Product';
+import { useCartStore } from '@/stores/cartStore';
 
 import { AddToCart } from './AddToCart';
 import { ProductColorSelector } from './ProductColorSelector';
@@ -26,7 +27,21 @@ const categoryLabels: Record<string, string> = {
 export function ProductInfo({ product }: ProductInfoProps) {
   const [quantity, setQuantity] = useState(1);
 
+  const [selectedColor, setSelectedColor] = useState<ProductColor | undefined>(
+    product.colors[0],
+  );
+
+  const addItem = useCartStore((state) => state.addItem);
+
   const isOutOfStock = product.stock <= 0;
+
+  const handleAddToCart = () => {
+    if (isOutOfStock) {
+      return;
+    }
+
+    addItem(product, quantity, selectedColor);
+  };
 
   return (
     <div className="flex flex-col justify-between">
@@ -65,7 +80,6 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
         <div className="mr-auto flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
           <Heart size={16} />
-
           {isOutOfStock ? 'ناموجود' : 'موجود در انبار'}
         </div>
       </div>
@@ -78,10 +92,14 @@ export function ProductInfo({ product }: ProductInfoProps) {
         />
       </div>
 
-      <div className="flex w-full justify-between">
+      <div className="flex w-full justify-between gap-4">
         {!isOutOfStock && product.colors.length > 0 && (
           <div className="mt-5">
-            <ProductColorSelector colors={product.colors} />
+            <ProductColorSelector
+              colors={product.colors}
+              value={selectedColor}
+              onChange={setSelectedColor}
+            />
           </div>
         )}
 
@@ -97,7 +115,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
       </div>
 
       <div className="mt-6">
-        <AddToCart disabled={isOutOfStock} />
+        <AddToCart disabled={isOutOfStock} onClick={handleAddToCart} />
       </div>
     </div>
   );

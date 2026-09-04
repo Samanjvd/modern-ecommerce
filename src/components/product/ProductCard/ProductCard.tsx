@@ -1,6 +1,7 @@
 import { Heart, ShoppingCart, Star } from 'lucide-react';
 import type { Product } from '@/types/Product';
 import { Button } from '@/components/ui/Button';
+import { useCartStore } from '@/stores/cartStore';
 
 type ProductCardProps = {
   product: Product;
@@ -18,6 +19,8 @@ export function ProductCard({
   const hasDiscount =
     product.discountPrice !== undefined &&
     product.discountPrice < product.price;
+
+  const addItem = useCartStore((state) => state.addItem);
 
   return (
     <article
@@ -112,6 +115,9 @@ export function ProductCard({
           disabled={product.stock === 0}
           onClick={(event) => {
             event.stopPropagation();
+
+            addItem(product, 1, product.colors[0]);
+
             onAddToCart?.(product);
           }}
           className="flex w-full gap-1"
