@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 import type { Product, ProductColor } from '@/types/Product';
 
@@ -30,7 +31,7 @@ type CartState = {
   getItemQuantity: (productId: number, colorValue?: string) => number;
 };
 
-const sameCartItem = (
+const isSameCartItem = (
   item: CartItem,
   productId: number,
   colorValue?: string,
@@ -40,87 +41,82 @@ const sameCartItem = (
   );
 };
 
-export const useCartStore = create<CartState>((set, get) => ({
-  items: [],
+export const useCartStore = create<CartState>()(
+  persist(
+    (set, get) => ({
+      items: [],
 
-  addItem: (product, quantity = 1, selectedColor) => {
-    set((state) => {
-      const existingItem = state.items.find((item) =>
-        sameCartItem(item, product.id, selectedColor?.value),
-      );
+      addItem: (product, quantity = 1, selectedColor) => {
+        set((state) => {
+          const existingItem = state.items.find((item) =>
+            isSameCartItem(item, product.id, selectedColor?.value),
+          );
 
-      if (existingItem) {
-        return {
+          if (existingItem) {
+            return {
+              items: state.items.map((item) => {
+                if (!isSameCartItem(item, product.id, selectedColor?.value)) {
+                  return item;
+                }
+
+                return {
+                  ...item,
+                  quantity: Math.min(item.quantity + quantity, product.stock),
+                };
+              }),
+            };
+          }
+
+          return {
+            items: [
+              ...state.items,
+              {
+                product,
+                quantity: Math.min(quantity, product.stock),
+                selectedColor,
+              },
+            ],
+          };
+        });
+      },
+
+      removeItem: (productId, colorValue) => {
+        set((state) => ({
+          items: state.items.filter(
+            (item) => !isSameCartItem(item, productId, colorValue),
+          ),
+        }));
+      },
+
+      updateQuantity: (productId, quantity, colorValue) => {
+        set((state) => ({
           items: state.items.map((item) => {
-            if (!sameCartItem(item, product.id, selectedColor?.value)) {
+            if (!isSameCartItem(item, productId, colorValue)) {
               return item;
             }
 
-            const nextQuantity = Math.min(
-              item.quantity + quantity,
-              product.stock,
-            );
-
             return {
               ...item,
-              quantity: nextQuantity,
+              quantity: Math.max(1, Math.min(quantity, item.product.stock)),
             };
           }),
-        };
-      }
+        }));
+      },
 
-      return {
-        items: [
-          ...state.items,
-          {
-            product,
-            quantity: Math.min(quantity, product.stock),
-            selectedColor,
-          },
-        ],
-      };
-    });
-  },
+      clearCart: () => {
+        set({ items: [] });
+      },
 
-  removeItem: (productId, colorValue) => {
-    set((state) => ({
-      items: state.items.filter(
-        (item) => !sameCartItem(item, productId, colorValue),
-      ),
-    }));
-  },
+      getItemQuantity: (productId, colorValue) => {
+        const item = get().items.find((currentItem) =>
+          isSameCartItem(currentItem, productId, colorValue),
+        );
 
-  updateQuantity: (productId, quantity, colorValue) => {
-    set((state) => ({
-      items: state.items
-        .map((item) => {
-          if (!sameCartItem(item, productId, colorValue)) {
-            return item;
-          }
-
-          const nextQuantity = Math.max(
-            1,
-            Math.min(quantity, item.product.stock),
-          );
-
-          return {
-            ...item,
-            quantity: nextQuantity,
-          };
-        })
-        .filter((item) => item.quantity > 0),
-    }));
-  },
-
-  clearCart: () => {
-    set({ items: [] });
-  },
-
-  getItemQuantity: (productId, colorValue) => {
-    const item = get().items.find((currentItem) =>
-      sameCartItem(currentItem, productId, colorValue),
-    );
-
-    return item?.quantity ?? 0;
-  },
-}));
+        return item?.quantity ?? 0;
+      },
+    }),
+    {
+      name: 'zanbilak-cart',
+    },
+  ),
+);

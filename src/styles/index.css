@@ -55,6 +55,7 @@ select {
 .price-range-thumb {
   pointer-events: none;
 }
+
 .price-range-thumb::-webkit-slider-thumb {
   pointer-events: auto;
   -webkit-appearance: none;
@@ -67,6 +68,7 @@ select {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
+
 .price-range-thumb::-moz-range-thumb {
   pointer-events: auto;
   width: 16px;
@@ -76,4 +78,8 @@ select {
   border: 2px solid white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   cursor: pointer;
+}
+
+.toaster {
+  direction: rtl;
 }

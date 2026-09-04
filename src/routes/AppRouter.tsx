@@ -5,6 +5,7 @@ import { Home } from '@/pages/Home';
 import { ProductListPage } from '@/pages/Products/ProductListPage';
 import { ProductDetailPage } from '@/pages/Products/ProductDetailPage';
 import { CartPage } from '@/pages/Cart';
+import { CheckoutPage } from '@/pages/Checkout';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -37,10 +38,7 @@ export function AppRouter() {
 
           <Route path="/cart" element={<CartPage />} />
 
-          <Route
-            path="/checkout"
-            element={<PlaceholderPage title="تسویه حساب" />}
-          />
+          <Route path="/checkout" element={<CheckoutPage />} />
 
           <Route
             path="/checkout/payment"

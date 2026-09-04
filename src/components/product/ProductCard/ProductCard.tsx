@@ -1,7 +1,10 @@
 import { Heart, ShoppingCart, Star } from 'lucide-react';
-import type { Product } from '@/types/Product';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+
 import { Button } from '@/components/ui/Button';
 import { useCartStore } from '@/stores/cartStore';
+import type { Product } from '@/types/Product';
 
 type ProductCardProps = {
   product: Product;
@@ -10,28 +13,79 @@ type ProductCardProps = {
   onProductClick?: (product: Product) => void;
 };
 
+const categoryLabels: Record<string, string> = {
+  mobile: 'موبایل',
+  laptop: 'لپ‌تاپ',
+  headphone: 'هدفون',
+  smartwatch: 'ساعت هوشمند',
+  camera: 'دوربین',
+  gaming: 'گیمینگ',
+  accessories: 'لوازم جانبی',
+  home: 'خانه و آشپزخانه',
+};
+
 export function ProductCard({
   product,
   onAddToCart,
   onFavorite,
   onProductClick,
 }: ProductCardProps) {
+  const navigate = useNavigate();
+
+  const addItem = useCartStore((state) => state.addItem);
+
   const hasDiscount =
     product.discountPrice !== undefined &&
     product.discountPrice < product.price;
 
-  const addItem = useCartStore((state) => state.addItem);
+  const isOutOfStock = product.stock <= 0;
+
+  const handleProductClick = () => {
+    if (onProductClick) {
+      onProductClick(product);
+      return;
+    }
+
+    navigate(`/product/${product.id}`);
+  };
+
+  const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+
+    if (isOutOfStock) {
+      return;
+    }
+
+    addItem(product, 1, product.colors[0]);
+
+    onAddToCart?.(product);
+
+    toast.success('محصول به سبد خرید اضافه شد');
+
+    navigate(`/product/${product.id}`);
+  };
+
+  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleProductClick();
+    }
+  };
 
   return (
     <article
-      onClick={() => onProductClick?.(product)}
-      className="group relative flex min-h-[430px] cursor-pointer flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]"
+      role="link"
+      tabIndex={0}
+      onClick={handleProductClick}
+      onKeyDown={handleCardKeyDown}
+      className="group relative flex min-h-[430px] cursor-pointer flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)] focus-visible:ring-3 focus-visible:ring-[var(--color-primary-light)] focus-visible:outline-none"
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-lg)] bg-zinc-50">
         <Button
           type="button"
           variant="ghost"
           size="icon"
+          aria-label="افزودن به علاقه‌مندی‌ها"
           onClick={(event) => {
             event.stopPropagation();
             onFavorite?.(product);
@@ -41,18 +95,20 @@ export function ProductCard({
           <Heart size={18} />
         </Button>
 
-        <div className="absolute top-16 left-3 z-20 flex flex-col gap-1.5">
-          {product.colors.slice(0, 4).map((color) => (
-            <span
-              key={color.name}
-              title={color.name}
-              className="h-5 w-5 rounded-full border-2 border-white shadow-sm ring-1 ring-black/10"
-              style={{
-                backgroundColor: color.value,
-              }}
-            />
-          ))}
-        </div>
+        {product.colors.length > 0 && (
+          <div className="absolute top-16 left-3 z-20 flex flex-col gap-1.5">
+            {product.colors.slice(0, 4).map((color) => (
+              <span
+                key={color.value}
+                title={color.name}
+                className="h-5 w-5 rounded-full border-2 border-white shadow-sm ring-1 ring-black/10"
+                style={{
+                  backgroundColor: color.value,
+                }}
+              />
+            ))}
+          </div>
+        )}
 
         <img
           src={product.image}
@@ -64,7 +120,7 @@ export function ProductCard({
 
       <div className="relative z-10 flex flex-col gap-3 px-1 pt-4">
         <span className="text-xs text-[var(--color-text-muted)]">
-          {product.category}
+          {categoryLabels[product.category] ?? product.category}
         </span>
 
         <h3 className="min-h-12 text-sm leading-6 font-medium text-[var(--color-text)]">
@@ -78,10 +134,12 @@ export function ProductCard({
             className="text-[var(--color-accent)]"
           />
 
-          <span className="text-xs font-medium">{product.rating}</span>
+          <span className="text-xs font-medium">
+            {product.rating.toLocaleString('fa-IR')}
+          </span>
 
           <span className="text-xs text-[var(--color-text-muted)]">
-            ({product.reviewCount})
+            ({product.reviewCount.toLocaleString('fa-IR')})
           </span>
         </div>
 
@@ -99,7 +157,7 @@ export function ProductCard({
               </div>
 
               <span className="rounded-full bg-[var(--color-primary-light)] px-2.5 py-1 text-xs font-bold text-[var(--color-primary)]">
-                {product.discount}٪ تخفیف
+                {product.discount ?? 0}٪ تخفیف
               </span>
             </div>
           ) : (
@@ -111,20 +169,15 @@ export function ProductCard({
 
         <Button
           type="button"
+          variant="primary"
           size="lg"
-          disabled={product.stock === 0}
-          onClick={(event) => {
-            event.stopPropagation();
-
-            addItem(product, 1, product.colors[0]);
-
-            onAddToCart?.(product);
-          }}
-          className="flex w-full gap-1"
+          disabled={isOutOfStock}
+          onClick={handleAddToCart}
+          className="w-full"
         >
           <ShoppingCart size={18} />
 
-          {product.stock > 0 ? 'افزودن به سبد' : 'ناموجود'}
+          {isOutOfStock ? 'ناموجود' : 'افزودن به سبد'}
         </Button>
       </div>
     </article>

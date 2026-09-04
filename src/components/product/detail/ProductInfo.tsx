@@ -1,4 +1,5 @@
 import { Heart, Star } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { useState } from 'react';
 
 import type { Product, ProductColor } from '@/types/Product';
@@ -25,22 +26,36 @@ const categoryLabels: Record<string, string> = {
 };
 
 export function ProductInfo({ product }: ProductInfoProps) {
-  const [quantity, setQuantity] = useState(1);
-
   const [selectedColor, setSelectedColor] = useState<ProductColor | undefined>(
     product.colors[0],
   );
 
+  const cartItems = useCartStore((state) => state.items);
+
   const addItem = useCartStore((state) => state.addItem);
 
+  const removeItem = useCartStore((state) => state.removeItem);
+
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
+
   const isOutOfStock = product.stock <= 0;
+
+  const selectedCartItem = cartItems.find(
+    (item) =>
+      item.product.id === product.id &&
+      item.selectedColor?.value === selectedColor?.value,
+  );
+
+  const cartQuantity = selectedCartItem?.quantity ?? 0;
 
   const handleAddToCart = () => {
     if (isOutOfStock) {
       return;
     }
 
-    addItem(product, quantity, selectedColor);
+    addItem(product, 1, selectedColor);
+
+    toast.success('محصول به سبد خرید اضافه شد');
   };
 
   return (
@@ -80,6 +95,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
 
         <div className="mr-auto flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
           <Heart size={16} />
+
           {isOutOfStock ? 'ناموجود' : 'موجود در انبار'}
         </div>
       </div>
@@ -92,30 +108,39 @@ export function ProductInfo({ product }: ProductInfoProps) {
         />
       </div>
 
-      <div className="flex w-full justify-between gap-4">
-        {!isOutOfStock && product.colors.length > 0 && (
-          <div className="mt-5">
-            <ProductColorSelector
-              colors={product.colors}
-              value={selectedColor}
-              onChange={setSelectedColor}
-            />
-          </div>
-        )}
+      {!isOutOfStock && (
+        <div className="flex w-full justify-between gap-4">
+          {product.colors.length > 0 && (
+            <div className="mt-5">
+              <ProductColorSelector
+                colors={product.colors}
+                value={selectedColor}
+                onChange={setSelectedColor}
+              />
+            </div>
+          )}
 
-        {!isOutOfStock && (
-          <div className="mt-5">
-            <ProductQuantity
-              value={quantity}
-              max={product.stock}
-              onChange={setQuantity}
-            />
-          </div>
-        )}
-      </div>
+          {cartQuantity > 0 && (
+            <div className="mt-5">
+              <ProductQuantity
+                value={cartQuantity}
+                max={product.stock}
+                onChange={(value) =>
+                  updateQuantity(product.id, value, selectedColor?.value)
+                }
+                onRemove={() => removeItem(product.id, selectedColor?.value)}
+              />
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-6">
-        <AddToCart disabled={isOutOfStock} onClick={handleAddToCart} />
+        {!isOutOfStock && cartQuantity === 0 && (
+          <AddToCart disabled={false} onClick={handleAddToCart} />
+        )}
+
+        {isOutOfStock && <AddToCart disabled />}
       </div>
     </div>
   );

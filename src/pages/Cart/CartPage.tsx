@@ -1,9 +1,9 @@
 import { ArrowRight, ShoppingCart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-import { Button } from '@/components/ui/Button';
 import { CartItem } from '@/components/cart/CartItem';
 import { CartSummary } from '@/components/cart/CartSummary';
+import { Button } from '@/components/ui/Button';
 import { useCartStore } from '@/stores/cartStore';
 
 export function CartPage() {
@@ -22,8 +22,7 @@ export function CartPage() {
           </h1>
 
           <p className="mt-2 text-sm leading-7 text-[var(--color-text-muted)]">
-            هنوز محصولی به سبد خرید اضافه نکردی. دنیا منتظر انتخاب‌های خرید
-            توست.
+            هنوز محصولی به سبد خرید اضافه نکردی.
           </p>
 
           <Link to="/products" className="mt-6">
@@ -37,6 +36,8 @@ export function CartPage() {
     );
   }
 
+  const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
+
   return (
     <section className="w-full px-4 py-8 md:px-16">
       <div className="mb-6">
@@ -44,13 +45,21 @@ export function CartPage() {
           خانه / سبد خرید
         </span>
 
-        <h1 className="mt-2 text-2xl font-bold text-[var(--color-text)]">
-          سبد خرید
-        </h1>
+        <div className="mt-2 flex flex-wrap items-end justify-between gap-2">
+          <div>
+            <h1 className="text-2xl font-bold text-[var(--color-text)]">
+              سبد خرید
+            </h1>
 
-        <p className="mt-1 text-xs text-[var(--color-text-muted)]">
-          محصولات انتخاب‌شده را بررسی و سفارش خود را نهایی کن.
-        </p>
+            <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+              محصولات انتخاب‌شده را بررسی و سفارش خود را نهایی کن.
+            </p>
+          </div>
+
+          <span className="text-xs text-[var(--color-text-muted)]">
+            {totalQuantity.toLocaleString('fa-IR')} کالا
+          </span>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
