@@ -6,6 +6,9 @@ import { ProductListPage } from '@/pages/Products/ProductListPage';
 import { ProductDetailPage } from '@/pages/Products/ProductDetailPage';
 import { CartPage } from '@/pages/Cart';
 import { CheckoutPage } from '@/pages/Checkout';
+import { CheckoutConfirmationPage } from '@/pages/Checkout/CheckoutConfirmationPage';
+import { CheckoutPaymentPage } from '@/pages/Checkout/CheckoutPaymentPage';
+import { CheckoutSuccessPage } from '@/pages/Checkout/CheckoutSuccessPage';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -41,13 +44,17 @@ export function AppRouter() {
           <Route path="/checkout" element={<CheckoutPage />} />
 
           <Route
-            path="/checkout/payment"
-            element={<PlaceholderPage title="پرداخت" />}
+            path="/checkout/confirmation"
+            element={<CheckoutConfirmationPage />}
           />
 
+          <Route path="/checkout/payment" element={<CheckoutPaymentPage />} />
+
+          <Route path="/checkout/success" element={<CheckoutSuccessPage />} />
+
           <Route
-            path="/checkout/success"
-            element={<PlaceholderPage title="پرداخت موفق" />}
+            path="/track-order/:code"
+            element={<PlaceholderPage title="پیگیری سفارش" />}
           />
 
           <Route
@@ -107,11 +114,6 @@ export function AppRouter() {
           <Route
             path="/shipping-returns"
             element={<PlaceholderPage title="ارسال و مرجوعی" />}
-          />
-
-          <Route
-            path="/track-order/:code"
-            element={<PlaceholderPage title="پیگیری سفارش" />}
           />
 
           <Route path="*" element={<PlaceholderPage title="صفحه پیدا نشد" />} />
