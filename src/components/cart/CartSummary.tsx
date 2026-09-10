@@ -21,9 +21,16 @@ export function CartSummary() {
     return total + price * item.quantity;
   }, 0);
 
-  const discount = originalTotal - subtotal;
+  const discount = Math.max(0, originalTotal - subtotal);
 
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+  const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+
+  const shipping = isFreeShipping ? 0 : SHIPPING_COST;
+
+  const remainingForFreeShipping = Math.max(
+    0,
+    FREE_SHIPPING_THRESHOLD - subtotal,
+  );
 
   const total = subtotal + shipping;
 
@@ -89,9 +96,15 @@ export function CartSummary() {
 
       {subtotal < FREE_SHIPPING_THRESHOLD && (
         <p className="mt-3 text-center text-[11px] leading-5 text-[var(--color-text-muted)]">
-          برای ارسال رایگان{' '}
-          {(FREE_SHIPPING_THRESHOLD - subtotal).toLocaleString('fa-IR')} تومان
-          دیگر خرید کنید.
+          {isFreeShipping ? (
+            'هزینه ارسال برای این سفارش رایگان است.'
+          ) : (
+            <>
+              برای ارسال رایگان{' '}
+              {remainingForFreeShipping.toLocaleString('fa-IR')} تومان دیگر خرید
+              کنید.
+            </>
+          )}
         </p>
       )}
     </aside>

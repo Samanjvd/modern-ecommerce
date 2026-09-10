@@ -1,13 +1,20 @@
-import { ArrowRight, ShoppingCart } from 'lucide-react';
+import { ArrowRight, ShoppingCart, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 import { CartItem } from '@/components/cart/CartItem';
 import { CartSummary } from '@/components/cart/CartSummary';
 import { Button } from '@/components/ui/Button';
 import { useCartStore } from '@/stores/cartStore';
+import toast from 'react-hot-toast';
 
 export function CartPage() {
   const items = useCartStore((state) => state.items);
+  const clearCart = useCartStore((state) => state.clearCart);
+
+  const handleClearCart = () => {
+    clearCart();
+    toast.success('سبد خرید خالی شد');
+  };
 
   if (!items.length) {
     return (
@@ -57,19 +64,40 @@ export function CartPage() {
           </div>
 
           <span className="text-xs text-[var(--color-text-muted)]">
-            {totalQuantity.toLocaleString('fa-IR')} کالا
+            {totalQuantity.toLocaleString('fa-IR')} کالا در سبد
           </span>
         </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-3">
-          {items.map((item) => (
-            <CartItem
-              key={`${item.product.id}-${item.selectedColor?.value ?? 'default'}`}
-              item={item}
-            />
-          ))}
+          <div>
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-xs text-[var(--color-text-muted)]">
+                {totalQuantity.toLocaleString('fa-IR')} کالا در سبد
+              </span>
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleClearCart}
+                className="text-[var(--color-error)] hover:bg-red-50 hover:text-[var(--color-error)]"
+              >
+                <Trash2 size={16} />
+                حذف همه
+              </Button>
+            </div>
+
+            <div className="space-y-3">
+              {items.map((item) => (
+                <CartItem
+                  key={`${item.product.id}-${item.selectedColor?.value ?? 'default'}`}
+                  item={item}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
         <CartSummary />
