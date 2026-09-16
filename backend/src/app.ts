@@ -2,6 +2,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
+import authRoutes from './routes/auth.routes.js';
 
 dotenv.config();
 
@@ -11,14 +12,11 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: 'http://localhost:5432',
+    origin: 'http://localhost:3000',
+    credentials: true,
   }),
 );
 
 app.use(express.json());
 
-app.get('/api/health', (_req, res) => {
-  res.json({
-    message: 'API is running',
-  });
-});
+app.use('/api/auth', authRoutes);
