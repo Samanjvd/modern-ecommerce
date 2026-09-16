@@ -46,7 +46,10 @@ model Product {
   id Int @id @default(autoincrement())
 
   title       String
+  slug  String @unique
   description String?
+
+  brand String
 
   price         Int
   discountPrice Int?
@@ -57,8 +60,11 @@ model Product {
 
   stock Int @default(0)
 
-  isNew     Boolean @default(false)
-  isPopular Boolean @default(false)
+  isNew      Boolean @default(false)
+  isPopular  Boolean @default(false)
+  isFeatured Boolean @default(false)
+
+  specifications Json?
 
   categoryId Int
   category   Category @relation(fields: [categoryId], references: [id])
