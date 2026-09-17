@@ -19,6 +19,7 @@ model User {
   phone  String?
   avatar String?
 
+  cart    Cart?
   reviews Review[]
 
   createdAt DateTime @default(now())
@@ -46,7 +47,7 @@ model Product {
   id Int @id @default(autoincrement())
 
   title       String
-  slug  String @unique
+  slug        String  @unique
   description String?
 
   brand String
@@ -72,6 +73,8 @@ model Product {
   images  ProductImage[]
   colors  ProductColor[]
   reviews Review[]
+
+  cartItems CartItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -109,4 +112,33 @@ model Review {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+}
+
+model Cart {
+  id Int @id @default(autoincrement())
+
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  items CartItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+  id Int @id @default(autoincrement())
+
+  quantity Int @default(1)
+
+  cartId Int
+  cart   Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
 }
