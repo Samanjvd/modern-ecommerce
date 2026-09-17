@@ -169,6 +169,7 @@ model Order {
   postalCode String
 
   items OrderItem[]
+  payment Payment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -202,4 +203,27 @@ model OrderItem {
   price Int
 
   createdAt DateTime @default(now())
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+
+  orderId Int @unique
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  amount Int
+
+  status PaymentStatus @default(PENDING)
+
+  transactionId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }

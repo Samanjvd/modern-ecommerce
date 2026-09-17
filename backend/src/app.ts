@@ -11,6 +11,7 @@ import userRoutes from './routes/user.routes.js';
 import cartRoutes from './routes/cart.routes.js';
 import orderRouter from './routes/order.route.js';
 import adminOrderRoutes from './routes/admin/order.route.js';
+import paymentRoutes from './routes/payment.route.js';
 
 dotenv.config();
 
@@ -37,3 +38,4 @@ app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRouter);
 app.use('/api/admin/orders', adminOrderRoutes);
+app.use('/api/payments', paymentRoutes);

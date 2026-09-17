@@ -3,7 +3,6 @@ import type { Request, Response } from 'express';
 import { prisma } from '../config/database.js';
 
 import type { UpdateOrderStatusInput } from '../validators/order.validator.js';
-import { OrderStatus } from '../generated/prisma/enums.js';
 
 export async function getAllOrders(_req: Request, res: Response) {
   try {
@@ -53,7 +52,7 @@ export async function updateOrderStatus(
   try {
     const orderId = Number(req.params.id);
 
-    if (!Number.isInteger(orderId)) {
+    if (!Number.isInteger(orderId) || orderId <= 0) {
       return res.status(400).json({
         message: 'شناسه سفارش نامعتبر است',
       });
@@ -71,55 +70,14 @@ export async function updateOrderStatus(
       });
     }
 
-    const updatedOrder = await prisma.$transaction(async (tx) => {
-      if (
-        order.status === OrderStatus.PENDING &&
-        req.body.status === OrderStatus.PROCESSING
-      ) {
-        const items = await tx.orderItem.findMany({
-          where: {
-            id: orderId,
-          },
-        });
+    const updatedOrder = await prisma.order.update({
+      where: {
+        id: orderId,
+      },
 
-        for (const item of items) {
-          const product = await tx.product.findUnique({
-            where: {
-              id: item.productId,
-            },
-          });
-
-          if (!product) {
-            throw new Error('محصول پیدا نشد');
-          }
-
-          if (product.stock < item.quantity) {
-            throw new Error(`موجودی محصول ${product.title} کافی نیست`);
-          }
-
-          await tx.product.update({
-            where: {
-              id: item.productId,
-            },
-
-            data: {
-              stock: {
-                decrement: item.quantity,
-              },
-            },
-          });
-        }
-      }
-
-      return tx.order.update({
-        where: {
-          id: orderId,
-        },
-
-        data: {
-          status: req.body.status,
-        },
-      });
+      data: {
+        status: req.body.status,
+      },
     });
 
     return res.json({
