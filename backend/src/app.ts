@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
 import categoryRoutes from './routes/category.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import adminCategoryRoutes from './routes/admin/category.routes.js';
 
 dotenv.config();
 
@@ -26,3 +27,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/categories', categoryRoutes);
+
+app.use('/api/admin/categories', adminCategoryRoutes);
