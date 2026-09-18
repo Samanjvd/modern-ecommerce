@@ -3,10 +3,10 @@ import type { Request, Response } from 'express';
 import type {
   CreateProductInput,
   UpdateProductInput,
-} from '../validators/product.validator.js';
+} from '../../validators/product.validator.js';
 
-import { prisma } from '../config/database.js';
-import type { Prisma } from '../generated/prisma/client.js';
+import { prisma } from '../../config/database.js';
+import type { Prisma } from '../../generated/prisma/client.js';
 
 export async function createProduct(
   req: Request<unknown, unknown, CreateProductInput>,

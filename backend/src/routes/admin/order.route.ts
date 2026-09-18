@@ -3,7 +3,7 @@ import { Router } from 'express';
 import {
   getAllOrders,
   updateOrderStatus,
-} from '../../controllers/admin.order.controller.js';
+} from '../../controllers/admin/admin.order.controller.js';
 
 import { authenticate } from '../../middleware/auth.middleware.js';
 

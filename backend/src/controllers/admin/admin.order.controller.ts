@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 
-import { prisma } from '../config/database.js';
+import { prisma } from '../../config/database.js';
 
-import type { UpdateOrderStatusInput } from '../validators/order.validator.js';
+import type { UpdateOrderStatusInput } from '../../validators/order.validator.js';
 
 export async function getAllOrders(_req: Request, res: Response) {
   try {

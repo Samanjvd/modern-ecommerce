@@ -4,7 +4,7 @@ import {
   createProduct,
   deleteProduct,
   updateProduct,
-} from '../../controllers/admin.controller.js';
+} from '../../controllers/admin/admin.controller.js';
 
 import { authenticate } from '../../middleware/auth.middleware.js';
 import { requireAdmin } from '../../middleware/admin.middleware.js';
