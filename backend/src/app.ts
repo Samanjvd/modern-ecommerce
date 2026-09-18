@@ -14,6 +14,7 @@ import adminOrderRoutes from './routes/admin/order.route.js';
 import paymentRoutes from './routes/payment.route.js';
 import reviewRouter from './routes/review.route.js';
 import adminUserRouter from './routes/admin/user.route.js';
+import dashboardRouter from './routes/admin/dashboard.route.js';
 
 dotenv.config();
 
@@ -43,3 +44,4 @@ app.use('/api/admin/orders', adminOrderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api', reviewRouter);
 app.use('/api/admin/users', adminUserRouter);
+app.use('/api/admin/dashboard', dashboardRouter);
