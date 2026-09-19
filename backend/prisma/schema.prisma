@@ -16,6 +16,8 @@ model User {
 
   role UserRole @default(USER)
 
+  refreshTokens RefreshToken[]
+
   phone  String?
   avatar String?
 
@@ -157,18 +159,14 @@ model Order {
   totalDiscount Int
   finalPrice    Int
 
-  firstName String
-  lastName  String
-
-  phone String
-
-  address String
-
-  city String
-
+  firstName  String
+  lastName   String
+  phone      String
+  address    String
+  city       String
   postalCode String
 
-  items OrderItem[]
+  items   OrderItem[]
   payment Payment[]
 
   createdAt DateTime @default(now())
@@ -199,8 +197,7 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id])
 
   quantity Int
-
-  price Int
+  price    Int
 
   createdAt DateTime @default(now())
 }
@@ -208,8 +205,8 @@ model OrderItem {
 model Payment {
   id Int @id @default(autoincrement())
 
-  orderId Int @unique
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId Int   @unique
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   amount Int
 
@@ -221,9 +218,21 @@ model Payment {
   updatedAt DateTime @updatedAt
 }
 
-
 enum PaymentStatus {
   PENDING
   SUCCESS
   FAILED
+}
+
+model RefreshToken {
+  id Int @id @default(autoincrement())
+
+  token String @unique
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
 }
