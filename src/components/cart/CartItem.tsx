@@ -45,10 +45,10 @@ export function CartItem({ item }: CartItemProps) {
   };
 
   return (
-    <article className="flex gap-3 border-b border-[var(--color-border)] py-5 last:border-b-0 sm:gap-4">
+    <article className="flex gap-3 rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 last:border-b-0 sm:gap-4">
       <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-md)] bg-[var(--color-background)] sm:h-28 sm:w-28">
         <img
-          src={product.image}
+          src={product.image[0].url}
           alt={product.title}
           className="h-full w-full object-contain p-2"
         />
@@ -101,7 +101,7 @@ export function CartItem({ item }: CartItemProps) {
             size="icon"
             aria-label={quantity === 1 ? 'حذف محصول' : 'کاهش تعداد'}
             onClick={handleDecrease}
-            className="h-10 w-9 rounded-none sm:w-10"
+            className="h-10 w-9 rounded-none bg-[var(--color-background)] sm:w-10"
           >
             {quantity === 1 ? (
               <Trash2 size={15} className="text-[var(--color-error)]" />

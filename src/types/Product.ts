@@ -36,7 +36,13 @@ export type ProductSpecifications = {
 export type Product = {
   id: number;
   title: string;
-  image: string;
+  image: [
+    {
+      id: number;
+      url: string;
+      productId: number;
+    },
+  ];
 
   price: number;
   discountPrice?: number;

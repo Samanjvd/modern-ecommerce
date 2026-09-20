@@ -1,45 +1,26 @@
-import {
-  Heart,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  Moon,
-  Search,
-  ShoppingCart,
-  User2,
-} from 'lucide-react';
+import { Menu, Moon, Search } from 'lucide-react';
 import { useState } from 'react';
+
 import { SearchInput } from '@/components/ui/SearchInput';
 import { Button } from '@/components/ui/Button';
 import { SearchModal } from '@/components/search/searchModal';
-import { Link, useNavigate } from 'react-router-dom';
-import { useCartStore } from '@/stores/cartStore';
-import { useAuth } from '@/hooks/useAuth';
+import { Link } from 'react-router-dom';
+
+import { UserMenu } from '../UserMenu';
+import { CartPopover } from '../CartPopover';
 
 export function Header() {
   const [search, setSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
 
-  const cartItems = useCartStore((state) => state.items);
-
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  function handleLogout() {
-    logout();
-    navigate('/login');
-  }
-
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-white/70 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-[var(--color-border)] bg-white/80 backdrop-blur-md">
         <div className="w-full px-4 md:px-16">
-          <div className="flex h-22 items-center gap-6">
+          <div className="flex h-20 items-center gap-4 md:h-22 md:gap-6">
             <Link
               to="/"
-              className="text-3xl font-bold tracking-tight text-[var(--color-primary)]"
+              className="text-2xl font-bold tracking-tight text-[var(--color-primary)] md:text-3xl"
             >
               زنبیلک
             </Link>
@@ -60,96 +41,27 @@ export function Header() {
               />
             </div>
 
-            <div className="mr-auto flex items-center gap-2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                aria-label="علاقه‌مندی‌ها"
-                className="hidden h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)] md:inline-flex"
-              >
-                <Heart size={20} />
-              </Button>
-
+            <div className="mr-auto flex items-center gap-1">
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 aria-label="حالت تاریک"
-                className="hidden h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-[var(--color-primary-light)] hover:text-[var(--color-primary)] md:inline-flex"
+                className="hidden h-10 w-10 rounded-full md:inline-flex"
               >
                 <Moon size={20} />
               </Button>
 
-              <Link to="/cart" aria-label="سبد خرید">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label="سبد خرید"
-                  className="relative"
-                >
-                  <ShoppingCart size={21} />
+              <CartPopover />
 
-                  {cartCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-primary)] px-1 text-[10px] leading-none text-white">
-                      {cartCount.toLocaleString('fa-IR')}
-                    </span>
-                  )}
-                </Button>
-              </Link>
-
-              {user ? (
-                <div className="flex items-center gap-3">
-                  <Link
-                    to="/profile"
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-gray-100"
-                  >
-                    <User2 size={20} />
-
-                    <span>{user.name || user.email}</span>
-                  </Link>
-
-                  {user.role === 'ADMIN' && (
-                    <Link
-                      to="/admin"
-                      className="flex items-center gap-2 rounded-lg bg-[var(--color-primary-light)] px-3 py-2 text-[var(--color-primary)]"
-                    >
-                      <LayoutDashboard size={20} />
-
-                      <span>پنل مدیریت</span>
-                    </Link>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="rounded-lg p-2 text-red-500 hover:bg-red-50"
-                  >
-                    <LogOut size={20} />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Link to="/login" className="rounded-lg px-4 py-2">
-                    ورود
-                  </Link>
-
-                  <Link
-                    to="/register"
-                    className="rounded-lg bg-[var(--color-primary)] px-4 py-2 text-white"
-                  >
-                    ثبت‌نام
-                  </Link>
-                </div>
-              )}
+              <UserMenu />
 
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 aria-label="منو"
-                className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-zinc-100 md:hidden"
+                className="flex h-10 w-10 rounded-full md:hidden"
               >
                 <Menu size={21} />
               </Button>
@@ -164,7 +76,7 @@ export function Header() {
               aria-controls="search-modal"
               aria-expanded={searchOpen}
               onClick={() => setSearchOpen(true)}
-              className="h-12 w-full justify-start rounded-[var(--radius-lg)] bg-zinc-100 px-4 text-right text-sm font-normal text-[var(--color-text-muted)] hover:bg-zinc-200 hover:text-[var(--color-text-muted)]"
+              className="h-12 w-full justify-start rounded-[var(--radius-lg)] bg-zinc-100 px-4 text-right text-sm font-normal text-[var(--color-text-muted)] hover:bg-zinc-200"
             >
               <Search size={19} />
 

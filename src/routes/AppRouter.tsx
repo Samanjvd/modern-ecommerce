@@ -12,6 +12,10 @@ import { CheckoutSuccessPage } from '@/pages/Checkout/CheckoutSuccessPage';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import AuthProvider from '@/providers/AuthProvider';
+import { AdminRoute } from '@/components/auth';
+import AdminLayout from '@/components/admin/AdminLayout';
+import DashboardPage from '@/pages/admin/DashboardPage';
+import ProductsPage from '@/pages/admin/ProductsPage';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -120,6 +124,15 @@ export function AppRouter() {
           </Route>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route element={<AdminRoute />}>
+            <Route element={<AdminLayout />}>
+              <Route path="/admin" element={<DashboardPage />} />
+              <Route path="/admin/products" element={<ProductsPage />} />
+              {/* <Route path="/admin/categories" element={<AdminCategories />} /> */}
+              {/* <Route path="/admin/orders" element={<AdminOrders />} /> */}
+              {/* <Route path="/admin/users" element={<AdminUsers />} /> */}
+            </Route>
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

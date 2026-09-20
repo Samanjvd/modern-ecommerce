@@ -31,15 +31,15 @@ type CartState = {
   getItemQuantity: (productId: number, colorValue?: string) => number;
 };
 
-const isSameCartItem = (
+function isSameCartItem(
   item: CartItem,
   productId: number,
   colorValue?: string,
-) => {
+) {
   return (
     item.product.id === productId && item.selectedColor?.value === colorValue
   );
-};
+}
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -104,7 +104,9 @@ export const useCartStore = create<CartState>()(
       },
 
       clearCart: () => {
-        set({ items: [] });
+        set({
+          items: [],
+        });
       },
 
       getItemQuantity: (productId, colorValue) => {
