@@ -1,21 +1,22 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthStore } from '@/stores/auth.store';
 
 export default function ProtectedRoute() {
-  const { isAuthenticated } = useAuth();
-  const location = useLocation();
+  const user = useAuthStore((state) => state.user);
 
-  if (!isAuthenticated) {
+  const isLoading = useAuthStore((state) => state.isLoading);
+
+  if (isLoading) {
     return (
-      <Navigate
-        to="/login"
-        replace
-        state={{
-          from: location,
-        }}
-      />
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-primary)] border-t-transparent" />
+      </div>
     );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
   }
 
   return <Outlet />;

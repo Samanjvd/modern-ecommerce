@@ -1,13 +1,19 @@
-import axios from 'axios';
+import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
+
+import { useAuthStore } from '@/stores/auth.store';
+
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
 
 export const api = axios.create({
   baseURL: 'http://localhost:5000/api',
-
   withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('accessToken');
+  const token =
+    useAuthStore.getState().accessToken ?? localStorage.getItem('accessToken');
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -16,36 +22,65 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-let refreshing = false;
+let refreshPromise: Promise<string> | null = null;
+
+async function refreshAccessToken() {
+  if (!refreshPromise) {
+    refreshPromise = api
+      .post<{ accessToken: string }>('/auth/refresh')
+      .then((response) => {
+        const token = response.data.accessToken;
+
+        useAuthStore.getState().setAccessToken(token);
+
+        return token;
+      })
+      .finally(() => {
+        refreshPromise = null;
+      });
+  }
+
+  return refreshPromise;
+}
 
 api.interceptors.response.use(
   (response) => response,
 
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    const originalRequest = error.config as RetryableRequestConfig | undefined;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      if (!refreshing) {
-        refreshing = true;
-
-        try {
-          const response = await api.post('/auth/refresh');
-
-          const token = response.data.accessToken;
-
-          localStorage.setItem('accessToken', token);
-
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-
-          return api(originalRequest);
-        } finally {
-          refreshing = false;
-        }
-      }
+    if (!originalRequest) {
+      return Promise.reject(error);
     }
 
-    return Promise.reject(error);
+    const requestUrl = originalRequest.url ?? '';
+
+    const isAuthRequest =
+      requestUrl.includes('/auth/login') ||
+      requestUrl.includes('/auth/register') ||
+      requestUrl.includes('/auth/refresh') ||
+      requestUrl.includes('/auth/logout');
+
+    if (
+      error.response?.status !== 401 ||
+      originalRequest._retry ||
+      isAuthRequest
+    ) {
+      return Promise.reject(error);
+    }
+
+    originalRequest._retry = true;
+
+    try {
+      const token = await refreshAccessToken();
+
+      originalRequest.headers.Authorization = `Bearer ${token}`;
+
+      return api(originalRequest);
+    } catch (refreshError) {
+      useAuthStore.getState().logout();
+
+      return Promise.reject(refreshError);
+    }
   },
 );

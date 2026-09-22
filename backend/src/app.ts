@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+
 import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
 import categoryRoutes from './routes/category.routes.js';
@@ -36,13 +37,19 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+
 app.use('/api/admin', adminRoutes);
 app.use('/api/admin/categories', adminCategoryRoutes);
+
 app.use('/api/users', userRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/orders', orderRouter);
+
 app.use('/api/admin/orders', adminOrderRoutes);
+
 app.use('/api/payments', paymentRoutes);
+
 app.use('/api', reviewRouter);
+
 app.use('/api/admin/users', adminUserRouter);
 app.use('/api/admin/dashboard', dashboardRouter);

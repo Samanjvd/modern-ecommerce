@@ -1,58 +1,81 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
-import { getMeApi, refreshApi } from '@/api/auth.api';
+import { api } from '@/api/axios';
 
 import { useAuthStore } from '@/stores/auth.store';
-import { useCartStore } from '@/stores/cartStore';
 
-export default function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const setAuth = useAuthStore((state) => state.setAuth);
+type AuthProviderProps = {
+  children: ReactNode;
+};
+
+export default function AuthProvider({ children }: AuthProviderProps) {
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+
+  const setUser = useAuthStore((state) => state.setUser);
 
   const logout = useAuthStore((state) => state.logout);
 
-  const [loading, setLoading] = useState(true);
+  const setLoading = useAuthStore((state) => state.setLoading);
+
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    async function initAuth() {
+    let mounted = true;
+
+    async function initializeAuth() {
       try {
-        let token = localStorage.getItem('accessToken');
+        let token = accessToken;
 
         if (!token) {
-          const refresh = await refreshApi();
+          const response = await api.post<{
+            accessToken: string;
+          }>('/auth/refresh');
 
-          token = refresh.accessToken;
+          token = response.data.accessToken;
 
-          localStorage.setItem('accessToken', token!);
+          setAccessToken(token);
         }
 
-        const data = await getMeApi();
+        const response = await api.get('/auth/me');
 
-        setAuth(data.user, token!);
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const loadCart = useCartStore((state) => state.loadCart);
-        await loadCart();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      } catch (error) {
+        if (!mounted) {
+          return;
+        }
+
+        setUser(response.data.user);
+      } catch {
+        if (!mounted) {
+          return;
+        }
+
         logout();
       } finally {
+        if (!mounted) {
+          // eslint-disable-next-line no-unsafe-finally
+          return;
+        }
+
         setLoading(false);
+        setInitialized(true);
       }
     }
 
-    initAuth();
+    initializeAuth();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  if (loading) {
+  if (!initialized) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        Loading...
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[var(--color-primary)] border-t-transparent" />
       </div>
     );
   }
 
-  return children;
+  return <>{children}</>;
 }
