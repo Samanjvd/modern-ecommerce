@@ -24,7 +24,9 @@ export async function getCart(req: Request, res: Response) {
           include: {
             product: {
               include: {
+                category: true,
                 images: true,
+                colors: true,
               },
             },
           },
@@ -43,7 +45,9 @@ export async function getCart(req: Request, res: Response) {
             include: {
               product: {
                 include: {
+                  category: true,
                   images: true,
+                  colors: true,
                 },
               },
             },
@@ -66,9 +70,50 @@ export async function getCart(req: Request, res: Response) {
 
     const totalDiscount = totalPrice - finalPrice;
 
+    const mappedItems = cart.items.map((item) => ({
+      id: item.id,
+
+      quantity: item.quantity,
+
+      product: {
+        id: item.product.id,
+        title: item.product.title,
+        description: item.product.description,
+
+        image: item.product.images[0]?.url ?? '',
+
+        price: item.product.price,
+        discountPrice: item.product.discountPrice ?? undefined,
+        discount: item.product.discount ?? undefined,
+
+        rating: item.product.rating,
+        reviewCount: item.product.reviewCount,
+
+        category: item.product.category.slug,
+
+        brand: item.product.brand,
+
+        colors: item.product.colors.map((color) => ({
+          name: color.name,
+          value: color.value,
+        })),
+
+        stock: item.product.stock,
+
+        isNew: item.product.isNew,
+        isPopular: item.product.isPopular,
+        isFeatured: item.product.isFeatured,
+
+        specifications: item.product.specifications ?? undefined,
+      },
+    }));
+
     return res.json({
       cart: {
-        ...cart,
+        id: cart.id,
+        userId: cart.userId,
+
+        items: mappedItems,
 
         summary: {
           totalItems,

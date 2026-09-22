@@ -49,20 +49,27 @@ export function ProductCard({
     navigate(`/product/${product.id}`);
   };
 
-  const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddToCart = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
 
     if (isOutOfStock) {
+      toast.error('این محصول موجود نیست');
       return;
     }
 
-    addItem(product, 1, product.colors[0]);
+    try {
+      await addItem(product, 1, product.colors[0]);
 
-    onAddToCart?.(product);
+      onAddToCart?.(product);
 
-    toast.success('محصول به سبد خرید اضافه شد');
+      toast.success('محصول به سبد خرید اضافه شد');
 
-    navigate(`/product/${product.id}`);
+      navigate('/cart');
+    } catch {
+      toast.error('افزودن محصول به سبد خرید انجام نشد');
+    }
   };
 
   const handleCardKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
@@ -111,7 +118,7 @@ export function ProductCard({
         )}
 
         <img
-          src={product.image}
+          src={product.images[0].url}
           alt={product.title}
           draggable={false}
           className="h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"

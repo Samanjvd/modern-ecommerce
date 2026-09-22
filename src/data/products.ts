@@ -39,8 +39,13 @@ export const products: Product[] = [
   {
     id: 1,
     title: 'گوشی موبایل Apple iPhone 15 Pro Max 256GB',
-    image:
-      'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
     price: 82900000,
     discountPrice: 79900000,
     discount: 4,
@@ -66,8 +71,14 @@ export const products: Product[] = [
   {
     id: 2,
     title: 'گوشی موبایل Samsung Galaxy S24 Ultra 256GB',
-    image:
-      'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 2,
+        url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=800&q=80',
+        productId: 2,
+      },
+    ],
+
     price: 69900000,
     discountPrice: 64900000,
     discount: 7,
@@ -93,8 +104,14 @@ export const products: Product[] = [
   {
     id: 3,
     title: 'گوشی موبایل Xiaomi 14 256GB',
-    image:
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 3,
+        url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80',
+        productId: 3,
+      },
+    ],
+
     price: 45900000,
     discountPrice: 42900000,
     discount: 7,
@@ -119,8 +136,14 @@ export const products: Product[] = [
   {
     id: 4,
     title: 'تبلت Samsung Galaxy Tab S9 FE 128GB',
-    image:
-      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 4,
+        url: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80',
+        productId: 4,
+      },
+    ],
+
     price: 32900000,
     discountPrice: 29900000,
     discount: 9,
@@ -144,8 +167,14 @@ export const products: Product[] = [
   {
     id: 5,
     title: 'لپ تاپ Apple MacBook Air M2 13.6-inch',
-    image:
-      'https://images.unsplash.com/photo-1517336714739-489689fd1ca8?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 5,
+        url: 'https://images.unsplash.com/photo-1517336714739-489689fd1ca8?auto=format&fit=crop&w=800&q=80',
+        productId: 5,
+      },
+    ],
+
     price: 68900000,
     discountPrice: 64900000,
     discount: 6,
@@ -171,8 +200,14 @@ export const products: Product[] = [
   {
     id: 6,
     title: 'لپ تاپ ASUS Vivobook 15 Core i7',
-    image:
-      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 6,
+        url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=800&q=80',
+        productId: 6,
+      },
+    ],
+
     price: 48900000,
     discountPrice: 45900000,
     discount: 6,
@@ -198,8 +233,14 @@ export const products: Product[] = [
   {
     id: 7,
     title: 'لپ تاپ Lenovo LOQ Gaming 15',
-    image:
-      'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 7,
+        url: 'https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=800&q=80',
+        productId: 7,
+      },
+    ],
+
     price: 74900000,
     discountPrice: 69900000,
     discount: 7,
@@ -226,8 +267,14 @@ export const products: Product[] = [
   {
     id: 8,
     title: 'لپ تاپ HP Pavilion 15',
-    image:
-      'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 8,
+        url: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=800&q=80',
+        productId: 8,
+      },
+    ],
+
     price: 42900000,
     rating: 4.5,
     reviewCount: 74,
@@ -250,8 +297,14 @@ export const products: Product[] = [
   {
     id: 9,
     title: 'هدفون بی‌سیم Sony WH-1000XM5',
-    image:
-      'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 9,
+        url: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=800&q=80',
+        productId: 9,
+      },
+    ],
+
     price: 18900000,
     discountPrice: 16900000,
     discount: 10,
@@ -275,8 +328,14 @@ export const products: Product[] = [
   {
     id: 10,
     title: 'هدفون Apple AirPods Pro 2',
-    image:
-      'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 10,
+        url: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?auto=format&fit=crop&w=800&q=80',
+        productId: 10,
+      },
+    ],
+
     price: 10870000,
     discountPrice: 9240000,
     discount: 15,
@@ -300,8 +359,14 @@ export const products: Product[] = [
   {
     id: 11,
     title: 'هدفون بی‌سیم JBL Tune 770NC',
-    image:
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 7490000,
     discountPrice: 6790000,
     discount: 9,
@@ -323,8 +388,14 @@ export const products: Product[] = [
   {
     id: 12,
     title: 'هندزفری سیمی Samsung AKG',
-    image:
-      'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 1290000,
     rating: 4.3,
     reviewCount: 89,
@@ -341,8 +412,14 @@ export const products: Product[] = [
   {
     id: 13,
     title: 'ساعت هوشمند Apple Watch Series 9',
-    image:
-      'https://images.unsplash.com/photo-1551816230-ef5deaed4a26?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1551816230-ef5deaed4a26?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 22900000,
     discountPrice: 20300000,
     discount: 12,
@@ -365,8 +442,14 @@ export const products: Product[] = [
   {
     id: 14,
     title: 'ساعت هوشمند Samsung Galaxy Watch 7',
-    image:
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 18900000,
     discountPrice: 16900000,
     discount: 11,
@@ -387,8 +470,14 @@ export const products: Product[] = [
   {
     id: 15,
     title: 'ساعت هوشمند Xiaomi Watch 2',
-    image:
-      'https://images.unsplash.com/photo-1579586337278-3f436f25d4d1?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1579586337278-3f436f25d4d1?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 10900000,
     discountPrice: 9490000,
     discount: 13,
@@ -408,8 +497,14 @@ export const products: Product[] = [
   {
     id: 16,
     title: 'دوربین دیجیتال Canon EOS R10',
-    image:
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 62900000,
     discountPrice: 58900000,
     discount: 6,
@@ -429,8 +524,14 @@ export const products: Product[] = [
   {
     id: 17,
     title: 'دوربین Sony Alpha A6400',
-    image:
-      'https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 54900000,
     discountPrice: 51900000,
     discount: 5,
@@ -450,8 +551,14 @@ export const products: Product[] = [
   {
     id: 18,
     title: 'کیبورد مکانیکی Logitech G Pro X',
-    image:
-      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 6490000,
     discountPrice: 5790000,
     discount: 11,
@@ -468,8 +575,14 @@ export const products: Product[] = [
   {
     id: 19,
     title: 'ماوس گیمینگ Razer DeathAdder V3',
-    image:
-      'https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 3890000,
     discountPrice: 3290000,
     discount: 15,
@@ -485,8 +598,14 @@ export const products: Product[] = [
   {
     id: 20,
     title: 'کنسول بازی Sony PlayStation 5 Slim',
-    image:
-      'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 39900000,
     discountPrice: 37900000,
     discount: 5,
@@ -502,8 +621,14 @@ export const products: Product[] = [
   {
     id: 21,
     title: 'اسپیکر بلوتوثی JBL Charge 5',
-    image:
-      'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 7990000,
     discountPrice: 6990000,
     discount: 13,
@@ -525,8 +650,14 @@ export const products: Product[] = [
   {
     id: 22,
     title: 'پاوربانک Anker 20000mAh',
-    image:
-      'https://images.unsplash.com/photo-1609592424837-8a6b3c7c6d5c?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1609592424837-8a6b3c7c6d5c?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 3290000,
     discountPrice: 2890000,
     discount: 12,
@@ -542,8 +673,14 @@ export const products: Product[] = [
   {
     id: 23,
     title: 'سرخ‌کن بدون روغن Philips HD9270',
-    image:
-      'https://images.unsplash.com/photo-1585515320310-259814833e62?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1585515320310-259814833e62?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 12900000,
     discountPrice: 11400000,
     discount: 12,
@@ -559,8 +696,14 @@ export const products: Product[] = [
   {
     id: 24,
     title: 'جاروبرقی رباتیک Xiaomi Robot Vacuum',
-    image:
-      'https://images.unsplash.com/photo-1581579185169-1c6c5c0f7f0d?auto=format&fit=crop&w=800&q=80',
+    images: [
+      {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1581579185169-1c6c5c0f7f0d?auto=format&fit=crop&w=800&q=80',
+        productId: 1,
+      },
+    ],
+
     price: 18900000,
     discountPrice: 16900000,
     discount: 10,

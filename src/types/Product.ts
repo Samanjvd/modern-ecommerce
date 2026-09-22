@@ -36,33 +36,25 @@ export type ProductSpecifications = {
 export type Product = {
   id: number;
   title: string;
-  image: [
-    {
-      id: number;
-      url: string;
-      productId: number;
-    },
-  ];
+
+  images: {
+    id: number;
+    url: string;
+    productId: number;
+  }[];
 
   price: number;
   discountPrice?: number;
   discount?: number;
-
   rating: number;
   reviewCount: number;
-
   description?: string;
-
   category: ProductCategory;
   brand: string;
-
   colors: ProductColor[];
-
   stock: number;
-
   isNew?: boolean;
   isFeatured?: boolean;
   isPopular?: boolean;
-
   specifications?: ProductSpecifications;
 };

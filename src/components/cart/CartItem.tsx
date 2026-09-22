@@ -1,4 +1,5 @@
 import { Minus, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components/ui/Button';
@@ -9,67 +10,103 @@ type CartItemProps = {
   item: CartItemType;
 };
 
-export function CartItem({ item }: CartItemProps) {
-  const updateQuantity = useCartStore((state) => state.updateQuantity);
-  const removeItem = useCartStore((state) => state.removeItem);
-
+export default function CartItem({ item }: CartItemProps) {
   const { product, quantity, selectedColor } = item;
 
-  const hasDiscount =
-    product.discountPrice !== undefined &&
-    product.discountPrice < product.price;
+  const { removeItem, updateQuantity, syncing } = useCartStore();
+
+  const [removing, setRemoving] = useState(false);
+
+  const isBusy = syncing || removing;
 
   const finalPrice = product.discountPrice ?? product.price;
 
-  const handleIncrease = () => {
+  const totalPrice = finalPrice * quantity;
+
+  const image = product.images?.[0]?.url || '';
+
+  async function handleRemove() {
+    try {
+      setRemoving(true);
+
+      await removeItem(product.id, selectedColor?.value);
+
+      toast.success('محصول از سبد خرید حذف شد');
+    } catch (error) {
+      console.error(error);
+
+      toast.error('حذف محصول انجام نشد');
+    } finally {
+      setRemoving(false);
+    }
+  }
+
+  async function handleIncrease() {
     if (quantity >= product.stock) {
+      toast.error('بیشتر از موجودی نمی‌توانید اضافه کنید');
       return;
     }
 
-    updateQuantity(product.id, quantity + 1, selectedColor?.value);
-  };
+    try {
+      await updateQuantity(product.id, quantity + 1, selectedColor?.value);
+    } catch (error) {
+      console.error(error);
 
-  const handleDecrease = () => {
-    if (quantity > 1) {
-      updateQuantity(product.id, quantity - 1, selectedColor?.value);
+      toast.error('بروزرسانی تعداد انجام نشد');
+    }
+  }
 
+  async function handleDecrease() {
+    if (quantity <= 1) {
+      await handleRemove();
       return;
     }
 
-    handleRemove();
-  };
+    try {
+      await updateQuantity(product.id, quantity - 1, selectedColor?.value);
+    } catch (error) {
+      console.error(error);
 
-  const handleRemove = () => {
-    removeItem(product.id, selectedColor?.value);
-    toast.success('محصول از سبد خرید حذف شد');
-  };
+      toast.error('بروزرسانی تعداد انجام نشد');
+    }
+  }
 
   return (
-    <article className="flex gap-3 rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5 last:border-b-0 sm:gap-4">
-      <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-md)] bg-[var(--color-background)] sm:h-28 sm:w-28">
-        <img
-          src={product.image[0].url}
-          alt={product.title}
-          className="h-full w-full object-contain p-2"
-        />
+    <article
+      className={`flex gap-4 border-b border-[var(--color-border)] py-5 last:border-b-0 ${
+        isBusy ? 'opacity-60' : ''
+      }`}
+    >
+      <div className="h-28 w-28 shrink-0 overflow-hidden rounded-xl bg-gray-50">
+        {image ? (
+          <img
+            src={image}
+            alt={product.title}
+            className="h-full w-full object-contain"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center text-xs text-gray-400">
+            بدون تصویر
+          </div>
+        )}
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col justify-between">
+      <div className="flex min-w-0 flex-1 flex-col justify-between gap-3">
         <div>
-          <h3 className="line-clamp-2 text-sm font-bold text-[var(--color-text)]">
+          <h3 className="line-clamp-2 font-medium text-gray-900">
             {product.title}
           </h3>
 
-          <p className="mt-1 text-xs text-[var(--color-text-muted)]">
-            برند: {product.brand}
-          </p>
+          {product.brand && (
+            <p className="mt-1 text-sm text-gray-500">{product.brand}</p>
+          )}
 
           {selectedColor && (
-            <div className="mt-2 flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+            <div className="mt-2 flex items-center gap-2 text-sm text-gray-500">
               <span>رنگ:</span>
 
               <span
-                className="h-4 w-4 rounded-full border border-black/10"
+                className="h-4 w-4 rounded-full border"
                 style={{
                   backgroundColor: selectedColor.value,
                 }}
@@ -80,53 +117,59 @@ export function CartItem({ item }: CartItemProps) {
           )}
         </div>
 
-        <div className="mt-3">
-          {hasDiscount && (
-            <span className="ml-2 text-xs text-[var(--color-text-muted)] line-through">
-              {product.price.toLocaleString('fa-IR')} تومان
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center rounded-lg border border-[var(--color-border)]">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={isBusy || quantity >= product.stock}
+              onClick={handleIncrease}
+              className="h-9 w-9 rounded-none"
+              aria-label="افزایش تعداد"
+            >
+              <Plus size={16} />
+            </Button>
+
+            <span className="flex h-9 min-w-10 items-center justify-center border-x border-[var(--color-border)] text-sm">
+              {quantity.toLocaleString('fa-IR')}
             </span>
-          )}
 
-          <span className="text-sm font-bold text-[var(--color-primary)]">
-            {finalPrice?.toLocaleString('fa-IR')} تومان
-          </span>
-        </div>
-      </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              disabled={isBusy}
+              onClick={handleDecrease}
+              className="h-9 w-9 rounded-none"
+              aria-label="کاهش تعداد"
+            >
+              <Minus size={16} />
+            </Button>
+          </div>
 
-      <div className="flex shrink-0 flex-col">
-        <div className="flex h-10 items-center overflow-hidden rounded-[var(--radius-md)] border border-[var(--color-border)]">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={quantity === 1 ? 'حذف محصول' : 'کاهش تعداد'}
-            onClick={handleDecrease}
-            className="h-10 w-9 rounded-none bg-[var(--color-background)] sm:w-10"
-          >
-            {quantity === 1 ? (
-              <Trash2 size={15} className="text-[var(--color-error)]" />
-            ) : (
-              <Minus size={15} />
+          <div className="text-left">
+            <p className="font-bold text-[var(--color-primary)]">
+              {totalPrice.toLocaleString('fa-IR')} تومان
+            </p>
+
+            {product.discountPrice && product.discountPrice < product.price && (
+              <p className="text-xs text-gray-400 line-through">
+                {(product.price * quantity).toLocaleString('fa-IR')} تومان
+              </p>
             )}
-          </Button>
-
-          <span
-            className="flex h-10 min-w-10 items-center justify-center border-x border-[var(--color-border)] text-xs font-bold text-[var(--color-text)]"
-            aria-live="polite"
-          >
-            {quantity.toLocaleString('fa-IR')}
-          </span>
+          </div>
 
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            aria-label="افزایش تعداد"
-            onClick={handleIncrease}
-            disabled={quantity >= product.stock}
-            className="h-10 w-9 rounded-none sm:w-10"
+            disabled={isBusy}
+            onClick={handleRemove}
+            className="text-red-500 hover:bg-red-50 hover:text-red-600"
+            aria-label="حذف محصول"
           >
-            <Plus size={15} />
+            <Trash2 size={18} />
           </Button>
         </div>
       </div>

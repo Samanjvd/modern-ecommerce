@@ -94,9 +94,9 @@ export function CartPopover() {
                       className="flex gap-3 rounded-xl p-2 transition hover:bg-gray-50"
                     >
                       <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-100">
-                        {item.product.image?.[0]?.url && (
+                        {item.product.images?.[0]?.url && (
                           <img
-                            src={item.product.image[0].url}
+                            src={item.product.images[0].url}
                             alt={item.product.title}
                             className="h-full w-full object-cover"
                           />

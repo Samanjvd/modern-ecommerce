@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getMeApi, refreshApi } from '@/api/auth.api';
 
 import { useAuthStore } from '@/stores/auth.store';
+import { useCartStore } from '@/stores/cartStore';
 
 export default function AuthProvider({
   children,
@@ -31,6 +32,9 @@ export default function AuthProvider({
         const data = await getMeApi();
 
         setAuth(data.user, token!);
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        const loadCart = useCartStore((state) => state.loadCart);
+        await loadCart();
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         logout();

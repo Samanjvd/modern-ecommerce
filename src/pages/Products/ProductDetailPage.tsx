@@ -28,7 +28,7 @@ export function ProductDetailPage() {
       <ProductBreadcrumb category={product.category} title={product.title} />
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(350px,0.85fr)] lg:gap-10">
-        <ProductGallery image={product.image} title={product.title} />
+        <ProductGallery image={product.images[0].url} title={product.title} />
 
         <ProductInfo product={product} />
       </div>
