@@ -1,11 +1,12 @@
 import { CheckCircle2, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCheckoutStore } from '@/stores/checkoutStore';
 
 import { Button } from '@/components/ui/Button';
 
 export function CheckoutSuccessPage() {
-  // eslint-disable-next-line react-hooks/purity
-  const orderCode = 'ZB-' + Math.floor(100000 + Math.random() * 900000);
+  const orderId = useCheckoutStore((state) => state.orderId);
+  const orderCode = orderId ? `ZB-${orderId}` : 'ZB-';
 
   return (
     <section className="flex min-h-[65vh] items-center justify-center px-4 py-12">

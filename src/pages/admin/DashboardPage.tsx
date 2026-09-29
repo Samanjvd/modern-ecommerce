@@ -2,27 +2,22 @@ import { Package, ShoppingBag, Users, Wallet } from 'lucide-react';
 
 import { useEffect, useState } from 'react';
 
-import { api } from '@/api/axios';
-
-type DashboardStats = {
-  totalProducts: number;
-  totalUsers: number;
-  totalOrders: number;
-  totalRevenue: number;
-};
+import { getDashboardApi, type DashboardResponse } from '@/api/admin.api';
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [stats, setStats] = useState<DashboardResponse['dashboard'] | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchDashboard() {
       try {
-        const response = await api.get('/admin/dashboard');
+        const response = await getDashboardApi();
 
-        setStats(response.data);
-      } catch (error) {
-        console.error(error);
+        setStats(response.dashboard);
+      } catch {
+        setStats(null);
       } finally {
         setLoading(false);
       }
@@ -42,22 +37,22 @@ export default function DashboardPage() {
   const cards = [
     {
       title: 'محصولات',
-      value: stats?.totalProducts ?? 0,
+      value: stats?.products.total ?? 0,
       icon: Package,
     },
     {
       title: 'کاربران',
-      value: stats?.totalUsers ?? 0,
+      value: stats?.users.total ?? 0,
       icon: Users,
     },
     {
       title: 'سفارش‌ها',
-      value: stats?.totalOrders ?? 0,
+      value: stats?.orders.total ?? 0,
       icon: ShoppingBag,
     },
     {
       title: 'درآمد',
-      value: stats?.totalRevenue ?? 0,
+      value: stats?.sales.total ?? 0,
       icon: Wallet,
     },
   ];

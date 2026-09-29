@@ -5,6 +5,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { useCartStore } from '@/stores/cartStore';
 import { useCheckoutStore } from '@/stores/checkoutStore';
+import {
+  createOrderApi,
+  createPaymentApi,
+  verifyPaymentApi,
+} from '@/api/order.api';
 
 const FREE_SHIPPING_THRESHOLD = 10_000_000;
 
@@ -19,8 +24,10 @@ export function CheckoutPaymentPage() {
   const shippingMethod = useCheckoutStore((state) => state.shippingMethod);
 
   const clearCheckout = useCheckoutStore((state) => state.clearCheckout);
+  const setOrderId = useCheckoutStore((state) => state.setOrderId);
 
   const [isPaying, setIsPaying] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   if (!items.length || !shippingData) {
     return (
@@ -55,15 +62,37 @@ export function CheckoutPaymentPage() {
 
   const total = subtotal + shipping;
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     setIsPaying(true);
+    setErrorMessage('');
 
-    setTimeout(() => {
-      clearCart();
+    try {
+      const nameParts = shippingData.fullName.trim().split(/\s+/);
+      const firstName = nameParts[0] ?? '';
+      const lastName = nameParts.slice(1).join(' ') || firstName;
+
+      const { order } = await createOrderApi({
+        firstName,
+        lastName,
+        phone: shippingData.phone,
+        address: shippingData.address,
+        city: shippingData.city,
+        postalCode: shippingData.postalCode,
+      });
+
+      const { payment } = await createPaymentApi(order.id);
+
+      await verifyPaymentApi(payment.id, `TEST-${Date.now()}`);
+
+      await clearCart();
       clearCheckout();
-
+      setOrderId(order.id);
       navigate('/checkout/success');
-    }, 1200);
+    } catch {
+      setErrorMessage('ثبت سفارش یا پرداخت انجام نشد. دوباره تلاش کنید.');
+    } finally {
+      setIsPaying(false);
+    }
   };
 
   return (
@@ -136,6 +165,10 @@ export function CheckoutPaymentPage() {
               ? 'در حال پردازش پرداخت...'
               : `پرداخت ${total.toLocaleString('fa-IR')} تومان`}
           </Button>
+
+          {errorMessage && (
+            <p className="text-sm text-[var(--color-error)]">{errorMessage}</p>
+          )}
         </div>
 
         <aside className="h-fit rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-5">

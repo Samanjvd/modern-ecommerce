@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { api } from '@/api/axios';
 
 import { useAuthStore } from '@/stores/auth.store';
+import { useCartStore } from '@/stores/cartStore';
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -18,6 +19,8 @@ export default function AuthProvider({ children }: AuthProviderProps) {
   const logout = useAuthStore((state) => state.logout);
 
   const setLoading = useAuthStore((state) => state.setLoading);
+
+  const loadCart = useCartStore((state) => state.loadCart);
 
   const [initialized, setInitialized] = useState(false);
 
@@ -45,6 +48,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
         }
 
         setUser(response.data.user);
+        await loadCart();
       } catch {
         if (!mounted) {
           return;
@@ -67,7 +71,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [loadCart]);
 
   if (!initialized) {
     return (

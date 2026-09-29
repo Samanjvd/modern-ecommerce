@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 import ProductForm from '@/components/admin/products/ProductForm';
 
@@ -35,8 +36,8 @@ export default function ProductsPage() {
       const response = await api.get('/products');
 
       setProducts(response.data.products ?? []);
-    } catch (error) {
-      console.error(error);
+    } catch {
+      toast.error('دریافت محصولات انجام نشد');
     } finally {
       setLoading(false);
     }
@@ -56,8 +57,8 @@ export default function ProductsPage() {
       await api.delete(`/admin/products/${id}`);
 
       setProducts((current) => current.filter((product) => product.id !== id));
-    } catch (error) {
-      console.error(error);
+    } catch {
+      toast.error('حذف محصول انجام نشد');
     }
   }
 

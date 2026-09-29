@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { heroSlides } from '@/data/heroSlide';
 import { Button } from '@/components/ui/Button';
+import { Link } from 'react-router-dom';
 
 export function HeroSlider() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -28,8 +29,8 @@ export function HeroSlider() {
   return (
     <section className="w-full px-4 py-5">
       <div className="relative overflow-hidden rounded-[var(--radius-xl)]">
-        <a
-          href={`/products/${currentSlide.productId}`}
+        <Link
+          to={`/product/${currentSlide.productId}`}
           className="block"
           aria-label={currentSlide.alt}
         >
@@ -39,9 +40,8 @@ export function HeroSlider() {
             alt={currentSlide.alt}
             className="aspect-[3/1] w-full object-cover"
           />
-        </a>
+        </Link>
 
-        {/* Navigation */}
         <div className="absolute right-4 bottom-4 flex items-center gap-2">
           <Button
             type="button"
@@ -66,7 +66,6 @@ export function HeroSlider() {
           </Button>
         </div>
 
-        {/* Indicators */}
         <div className="absolute right-1/2 bottom-5 flex translate-x-1/2 items-center gap-1.5">
           {heroSlides.map((slide, index) => (
             <button

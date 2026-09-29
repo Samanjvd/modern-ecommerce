@@ -12,10 +12,16 @@ import { CheckoutSuccessPage } from '@/pages/Checkout/CheckoutSuccessPage';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import AuthProvider from '@/providers/AuthProvider';
-import { AdminRoute } from '@/components/auth';
+import { AdminRoute, ProtectedRoute } from '@/components/auth';
 import AdminLayout from '@/components/admin/AdminLayout';
 import DashboardPage from '@/pages/admin/DashboardPage';
 import ProductsPage from '@/pages/admin/ProductsPage';
+import ProfilePage from '@/pages/account/ProfilePage';
+import OrdersPage from '@/pages/account/OrdersPage';
+import OrderDetailPage from '@/pages/account/OrderDetailPage';
+import AdminCategoriesPage from '@/pages/admin/CategoriesPage';
+import AdminOrdersPage from '@/pages/admin/OrdersPage';
+import AdminUsersPage from '@/pages/admin/UsersPage';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -48,6 +54,12 @@ export function AppRouter() {
             />
 
             <Route path="/cart" element={<CartPage />} />
+
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/orders" element={<OrdersPage />} />
+              <Route path="/orders/:id" element={<OrderDetailPage />} />
+            </Route>
 
             <Route path="/checkout" element={<CheckoutPage />} />
 
@@ -128,9 +140,12 @@ export function AppRouter() {
             <Route element={<AdminLayout />}>
               <Route path="/admin" element={<DashboardPage />} />
               <Route path="/admin/products" element={<ProductsPage />} />
-              {/* <Route path="/admin/categories" element={<AdminCategories />} /> */}
-              {/* <Route path="/admin/orders" element={<AdminOrders />} /> */}
-              {/* <Route path="/admin/users" element={<AdminUsers />} /> */}
+              <Route
+                path="/admin/categories"
+                element={<AdminCategoriesPage />}
+              />
+              <Route path="/admin/orders" element={<AdminOrdersPage />} />
+              <Route path="/admin/users" element={<AdminUsersPage />} />
             </Route>
           </Route>
         </Routes>
