@@ -1,14 +1,23 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
 
-import { products } from '@/data/products';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
+import { useProducts } from '@/hooks/useProducts';
 
 export function FeaturedProducts() {
+  const { data } = useProducts({
+    page: 1,
+    limit: 12,
+  });
+
+  const products = data?.products ?? [];
+
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  const featuredProducts = products.slice(0, 12);
+  const featuredProducts = products
+    .filter((product) => product.isFeatured)
+    .slice(0, 12);
 
   const scroll = (direction: 'next' | 'prev') => {
     if (!sliderRef.current) return;
@@ -60,18 +69,7 @@ export function FeaturedProducts() {
             key={product.id}
             className="w-[75%] shrink-0 sm:w-[42%] md:w-[31%] lg:w-[23%] xl:w-[19%]"
           >
-            <ProductCard
-              product={product}
-              onAddToCart={(product) => {
-                console.log('Add to cart:', product);
-              }}
-              onFavorite={(product) => {
-                console.log('Favorite:', product);
-              }}
-              onProductClick={(product) => {
-                console.log('Open product:', product);
-              }}
-            />
+            <ProductCard product={product} />
           </div>
         ))}
 

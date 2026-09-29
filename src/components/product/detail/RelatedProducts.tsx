@@ -1,16 +1,23 @@
-import { products } from '@/data/products';
 import type { Product } from '@/types/Product';
 
 import { ProductCard } from '@/components/product/ProductCard';
+import { useProducts } from '@/hooks/useProducts';
 
 type RelatedProductsProps = {
   product: Product;
 };
 
 export function RelatedProducts({ product }: RelatedProductsProps) {
+  const { data } = useProducts({
+    page: 1,
+    limit: 12,
+  });
+
+  const products = data?.products ?? [];
   const relatedProducts = products
     .filter(
-      (item) => item.category === product.category && item.id !== product.id,
+      (item) =>
+        item.category.slug === product.category.slug && item.id !== product.id,
     )
     .slice(0, 4);
 

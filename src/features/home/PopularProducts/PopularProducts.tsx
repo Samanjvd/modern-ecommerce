@@ -1,11 +1,13 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRef } from 'react';
 
-import { popularProducts } from '@/data/popularProducts';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
+import { usePopularProducts } from '@/hooks/popularProducts';
 
 export function PopularProducts() {
+  const { products } = usePopularProducts();
+
   const sliderRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'next' | 'prev') => {
@@ -59,23 +61,12 @@ export function PopularProducts() {
         ref={sliderRef}
         className="flex [scrollbar-width:none] gap-3 overflow-x-auto scroll-smooth pb-2 [&::-webkit-scrollbar]:hidden"
       >
-        {popularProducts.map((product) => (
+        {products.map((product) => (
           <div
             key={product.id}
             className="w-[75%] shrink-0 sm:w-[42%] md:w-[31%] lg:w-[23%] xl:w-[19%]"
           >
-            <ProductCard
-              product={product}
-              onAddToCart={(product) => {
-                console.log('Add to cart:', product);
-              }}
-              onFavorite={(product) => {
-                console.log('Favorite:', product);
-              }}
-              onProductClick={(product) => {
-                console.log('Open product:', product);
-              }}
-            />
+            <ProductCard product={product} />
           </div>
         ))}
 

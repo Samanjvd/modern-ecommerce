@@ -13,17 +13,6 @@ type ProductCardProps = {
   onProductClick?: (product: Product) => void;
 };
 
-const categoryLabels: Record<string, string> = {
-  mobile: 'موبایل',
-  laptop: 'لپ‌تاپ',
-  headphone: 'هدفون',
-  smartwatch: 'ساعت هوشمند',
-  camera: 'دوربین',
-  gaming: 'گیمینگ',
-  accessories: 'لوازم جانبی',
-  home: 'خانه و آشپزخانه',
-};
-
 export function ProductCard({
   product,
   onAddToCart,
@@ -34,24 +23,23 @@ export function ProductCard({
 
   const addItem = useCartStore((state) => state.addItem);
 
+  const image = product.images[0]?.url;
+
   const hasDiscount =
-    product.discountPrice !== undefined &&
-    product.discountPrice < product.price;
+    product.discountPrice !== null && product.discountPrice < product.price;
 
   const isOutOfStock = product.stock <= 0;
 
-  const handleProductClick = () => {
+  function handleProductClick() {
     if (onProductClick) {
       onProductClick(product);
       return;
     }
 
     navigate(`/product/${product.id}`);
-  };
+  }
 
-  const handleAddToCart = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-  ) => {
+  async function handleAddToCart(event: React.MouseEvent<HTMLButtonElement>) {
     event.stopPropagation();
 
     if (isOutOfStock) {
@@ -70,22 +58,14 @@ export function ProductCard({
     } catch {
       toast.error('افزودن محصول به سبد خرید انجام نشد');
     }
-  };
-
-  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleProductClick();
-    }
-  };
+  }
 
   return (
     <article
       role="link"
       tabIndex={0}
       onClick={handleProductClick}
-      onKeyDown={handleCardKeyDown}
-      className="group relative flex min-h-[430px] cursor-pointer flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)] focus-visible:ring-3 focus-visible:ring-[var(--color-primary-light)] focus-visible:outline-none"
+      className="group relative flex min-h-[430px] cursor-pointer flex-col justify-between overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-surface)] p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-md)]"
     >
       <div className="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-lg)] bg-zinc-50">
         <Button
@@ -97,7 +77,7 @@ export function ProductCard({
             event.stopPropagation();
             onFavorite?.(product);
           }}
-          className="absolute top-3 left-3 z-20 h-9 w-9 rounded-full bg-white/90 text-zinc-600 shadow-sm backdrop-blur transition-all duration-300 hover:scale-110 hover:text-[var(--color-error)]"
+          className="absolute top-3 left-3 z-20 h-9 w-9 rounded-full bg-white/90 text-zinc-600 shadow-sm backdrop-blur"
         >
           <Heart size={18} />
         </Button>
@@ -106,7 +86,7 @@ export function ProductCard({
           <div className="absolute top-16 left-3 z-20 flex flex-col gap-1.5">
             {product.colors.slice(0, 4).map((color) => (
               <span
-                key={color.value}
+                key={color.id}
                 title={color.name}
                 className="h-5 w-5 rounded-full border-2 border-white shadow-sm ring-1 ring-black/10"
                 style={{
@@ -117,17 +97,18 @@ export function ProductCard({
           </div>
         )}
 
-        <img
-          src={product.images[0].url}
-          alt={product.title}
-          draggable={false}
-          className="h-full w-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
-        />
+        {image && (
+          <img
+            src={image}
+            alt={product.title}
+            className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+          />
+        )}
       </div>
 
-      <div className="relative z-10 flex flex-col gap-3 px-1 pt-4">
+      <div className="flex flex-col gap-3 px-1 pt-4">
         <span className="text-xs text-[var(--color-text-muted)]">
-          {categoryLabels[product.category] ?? product.category}
+          {product.category.name}
         </span>
 
         <h3 className="min-h-12 text-sm leading-6 font-medium text-[var(--color-text)]">
@@ -152,21 +133,15 @@ export function ProductCard({
 
         <div className="flex min-h-14 flex-col justify-center">
           {hasDiscount ? (
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex flex-col">
-                <span className="text-xs text-[var(--color-text-muted)] line-through">
-                  {product.price.toLocaleString('fa-IR')} تومان
-                </span>
-
-                <span className="text-base font-bold text-[var(--color-text)]">
-                  {product.discountPrice!.toLocaleString('fa-IR')} تومان
-                </span>
-              </div>
-
-              <span className="rounded-full bg-[var(--color-primary-light)] px-2.5 py-1 text-xs font-bold text-[var(--color-primary)]">
-                {product.discount ?? 0}٪ تخفیف
+            <>
+              <span className="text-xs text-[var(--color-text-muted)] line-through">
+                {product.price.toLocaleString('fa-IR')} تومان
               </span>
-            </div>
+
+              <span className="text-base font-bold text-[var(--color-text)]">
+                {product.discountPrice!.toLocaleString('fa-IR')} تومان
+              </span>
+            </>
           ) : (
             <span className="text-base font-bold text-[var(--color-text)]">
               {product.price.toLocaleString('fa-IR')} تومان

@@ -21,12 +21,6 @@ export function ProductReviewForm({
       return;
     }
 
-    // بعداً به API متصل می‌شود.
-    console.log({
-      rating,
-      comment: comment.trim(),
-    });
-
     setRating(0);
     setComment('');
   };
@@ -65,7 +59,6 @@ export function ProductReviewForm({
         دیدگاه خود را ثبت کنید
       </h3>
 
-      {/* Rating */}
       <div className="mt-5">
         <p className="text-xs font-medium text-[var(--color-text)]">
           امتیاز شما
@@ -97,7 +90,6 @@ export function ProductReviewForm({
         </div>
       </div>
 
-      {/* Comment */}
       <div className="mt-5">
         <label
           htmlFor="product-review"

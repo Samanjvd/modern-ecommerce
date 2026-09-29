@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 
 import { Button } from '@/components/ui/Button';
 import { useCartStore } from '@/stores/cartStore';
-import type { CartItem as CartItemType } from '@/stores/cartStore';
+import type { CartItem as CartItemType } from '@/types/cart';
 
 type CartItemProps = {
   item: CartItemType;
@@ -23,7 +23,7 @@ export default function CartItem({ item }: CartItemProps) {
 
   const totalPrice = finalPrice * quantity;
 
-  const image = product.images?.[0]?.url || '';
+  const image = product.image || '';
 
   async function handleRemove() {
     try {

@@ -1,19 +1,23 @@
 import { useState } from 'react';
+import type { ProductImage } from '@/types/Product';
 
 type ProductGalleryProps = {
-  image: string;
+  images: ProductImage[];
   title: string;
 };
 
-export function ProductGallery({ image, title }: ProductGalleryProps) {
-  const [selectedImage, setSelectedImage] = useState(image);
+export function ProductGallery({ images, title }: ProductGalleryProps) {
+  const imageUrls = images.map((image) => image.url);
+  const [selectedImage, setSelectedImage] = useState(imageUrls[0] ?? '');
 
-  const images = [image];
+  if (!imageUrls.length) {
+    return <div className="min-h-[350px] rounded-[var(--radius-xl)] border" />;
+  }
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
       <div className="order-2 flex gap-2 sm:order-1 sm:flex-col">
-        {images.map((item, index) => {
+        {imageUrls.map((item, index) => {
           const isActive = selectedImage === item;
 
           return (

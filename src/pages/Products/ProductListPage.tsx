@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight, Filter, ListFilter, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { products } from '@/data/products';
+import { useProducts } from '@/hooks/useProducts';
 import type { Product } from '@/types/Product';
 import { type FilterState } from '@/data/productFilterConfigs';
 import { ProductCard } from '@/components/product/ProductCard';
@@ -12,12 +12,15 @@ type SortValue =
   'relevant' | 'newest' | 'popular' | 'cheapest' | 'expensive' | 'discount';
 
 const PRODUCTS_PER_PAGE = 12;
-const MAX_PAGES = 2;
 
-const getInitialPrice = (items: Product[]) => {
+const getInitialPrice = (items: Product[]): [number, number] => {
+  if (!items.length) {
+    return [0, 0];
+  }
+
   const prices = items.map((product) => product.discountPrice ?? product.price);
 
-  return [Math.min(...prices), Math.max(...prices)] as [number, number];
+  return [Math.min(...prices), Math.max(...prices)];
 };
 
 const getProductValue = (product: Product, key: string): unknown => {
@@ -37,7 +40,14 @@ const getProductValue = (product: Product, key: string): unknown => {
 };
 
 export function ProductListPage() {
-  const initialPrice = useMemo(() => getInitialPrice(products), []);
+  const { data, isLoading, isError } = useProducts({
+    page: 1,
+    limit: 50,
+  });
+
+  const products = useMemo(() => data?.products ?? [], [data?.products]);
+
+  const initialPrice = useMemo(() => getInitialPrice(products), [products]);
 
   const [filters, setFilters] = useState<FilterState>({
     category: undefined,
@@ -54,7 +64,7 @@ export function ProductListPage() {
       const productPrice = product.discountPrice ?? product.price;
 
       if (filters.category) {
-        if (product.category !== filters.category) {
+        if (product.category.slug !== filters.category) {
           return false;
         }
       }
@@ -134,11 +144,11 @@ export function ProductListPage() {
       default:
         return result.sort((a, b) => b.rating - a.rating);
     }
-  }, [filters, sort]);
+  }, [filters, products, sort]);
 
-  const totalPages = Math.min(
-    MAX_PAGES,
-    Math.max(1, Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE)),
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE),
   );
 
   const visibleProducts = filteredProducts.slice(
@@ -225,6 +235,26 @@ export function ProductListPage() {
       price: initialPrice,
     });
   };
+
+  if (isLoading) {
+    return (
+      <section className="flex min-h-[500px] items-center justify-center">
+        <p className="text-sm text-[var(--color-text-muted)]">
+          در حال دریافت محصولات...
+        </p>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section className="flex min-h-[500px] items-center justify-center">
+        <p className="text-sm text-[var(--color-error)]">
+          دریافت محصولات با خطا مواجه شد.
+        </p>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full px-4 py-8 md:px-16">

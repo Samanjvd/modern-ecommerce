@@ -30,7 +30,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
     product.colors[0],
   );
 
-  const cartItems = useCartStore((state) => state.items);
+  const cartItems = useCartStore((state) => state.items ?? []);
 
   const addItem = useCartStore((state) => state.addItem);
 
@@ -61,7 +61,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
   return (
     <div className="flex flex-col justify-between">
       <span className="text-xs font-medium text-[var(--color-primary)]">
-        {categoryLabels[product.category] ?? product.category}
+        {categoryLabels[product.category.slug] ?? product.category.name}
       </span>
 
       <h1 className="mt-3 text-xl leading-8 font-bold text-[var(--color-text)] md:text-2xl md:leading-10">

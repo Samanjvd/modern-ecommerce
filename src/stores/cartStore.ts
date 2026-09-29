@@ -1,8 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { Product, ProductColor } from '@/types/Product';
-
 import {
   addToCartApi,
   clearCartApi,
@@ -11,21 +9,13 @@ import {
   updateCartItemApi,
 } from '@/api/cart.api';
 
-export type CartItem = {
-  id?: number;
-
-  product: Product;
-
-  quantity: number;
-
-  selectedColor?: ProductColor;
-};
+import type { CartItem } from '@/types/cart';
+import type { Product, ProductColor } from '@/types/Product';
 
 type CartState = {
   items: CartItem[];
 
   loading: boolean;
-
   syncing: boolean;
 
   loadCart: () => Promise<void>;
@@ -107,7 +97,14 @@ export const useCartStore = create<CartState>()(
 
         const currentQuantity = existingItem?.quantity ?? 0;
 
-        const newQuantity = Math.min(currentQuantity + quantity, product.stock);
+        const nextQuantity = Math.min(
+          currentQuantity + quantity,
+          product.stock,
+        );
+
+        if (nextQuantity === currentQuantity) {
+          return;
+        }
 
         set({
           syncing: true,
@@ -116,32 +113,10 @@ export const useCartStore = create<CartState>()(
         try {
           await addToCartApi(product.id, quantity);
 
-          set((state) => {
-            if (existingItem) {
-              return {
-                items: state.items.map((item) => {
-                  if (!isSameCartItem(item, product.id, selectedColor?.value)) {
-                    return item;
-                  }
+          const cart = await getCartApi();
 
-                  return {
-                    ...item,
-                    quantity: newQuantity,
-                  };
-                }),
-              };
-            }
-
-            return {
-              items: [
-                ...state.items,
-                {
-                  product,
-                  quantity: Math.min(quantity, product.stock),
-                  selectedColor,
-                },
-              ],
-            };
+          set({
+            items: cart.cart.items,
           });
         } finally {
           set({
@@ -261,6 +236,7 @@ export const useCartStore = create<CartState>()(
         });
       },
     }),
+
     {
       name: 'zanbilak-cart',
     },

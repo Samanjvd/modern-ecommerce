@@ -12,32 +12,24 @@ export function mapProduct(product: ProductWithRelations) {
   return {
     id: product.id,
     title: product.title,
+    slug: product.slug,
     description: product.description,
-
-    image: product.images[0]?.url ?? '',
-
+    brand: product.brand,
     price: product.price,
     discountPrice: product.discountPrice,
     discount: product.discount,
-
     rating: product.rating,
     reviewCount: product.reviewCount,
-
-    category: product.category.slug,
-
-    brand: product.brand,
-
-    colors: product.colors.map((color) => ({
-      name: color.name,
-      value: color.value,
-    })),
-
     stock: product.stock,
-
     isNew: product.isNew,
     isPopular: product.isPopular,
     isFeatured: product.isFeatured,
-
     specifications: product.specifications,
+    categoryId: product.categoryId,
+    category: product.category,
+    images: product.images,
+    colors: product.colors,
+    createdAt: product.createdAt,
+    updatedAt: product.updatedAt,
   };
 }

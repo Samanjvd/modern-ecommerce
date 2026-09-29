@@ -1,7 +1,7 @@
 type ProductPriceProps = {
   price: number;
-  discountPrice?: number;
-  discount?: number;
+  discountPrice: number | null;
+  discount: number | null;
 };
 
 export function ProductPrice({

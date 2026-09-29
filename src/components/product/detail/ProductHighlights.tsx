@@ -27,7 +27,7 @@ export function ProductHighlights({ product }: ProductHighlightsProps) {
     {
       icon: ShieldCheck,
       label: 'دسته‌بندی',
-      value: categoryLabels[product.category] ?? product.category,
+      value: categoryLabels[product.category.slug] ?? product.category.name,
     },
     {
       icon: Star,

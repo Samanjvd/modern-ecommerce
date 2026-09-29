@@ -9,52 +9,83 @@ export type ProductCategory =
   | 'home';
 
 export type ProductColor = {
+  id: number;
   name: string;
   value: string;
+  productId: number;
+};
+
+export type ProductImage = {
+  id: number;
+  url: string;
+  productId: number;
+};
+
+export type ProductCategoryInfo = {
+  id: number;
+  name: string;
+  slug: ProductCategory;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type ProductSpecifications = {
-  ram?: string;
-  storage?: string;
   cpu?: string;
-  gpu?: string;
-  screenSize?: number;
-  resolution?: string;
+  ram?: string;
   battery?: number;
+  storage?: string;
+  resolution?: string;
+  screenSize?: number;
   operatingSystem?: string;
-  connectionType?: string;
+
   bluetooth?: boolean;
-  noiseCancellation?: boolean;
   microphone?: boolean;
-  refreshRate?: number;
-  panelType?: string;
-  hdr?: boolean;
-  camera?: string;
-  usageType?: string;
+  connectionType?: string;
+  noiseCancellation?: boolean;
+
+  [key: string]: string | number | boolean | undefined;
 };
 
 export type Product = {
   id: number;
   title: string;
+  slug: string;
+  description: string | null;
 
-  images: {
-    id: number;
-    url: string;
-    productId: number;
-  }[];
+  brand: string;
 
   price: number;
-  discountPrice?: number;
-  discount?: number;
+  discountPrice: number | null;
+  discount: number | null;
+
   rating: number;
   reviewCount: number;
-  description?: string;
-  category: ProductCategory;
-  brand: string;
-  colors: ProductColor[];
+
   stock: number;
-  isNew?: boolean;
-  isFeatured?: boolean;
-  isPopular?: boolean;
-  specifications?: ProductSpecifications;
+
+  isNew: boolean;
+  isPopular: boolean;
+  isFeatured: boolean;
+
+  specifications: ProductSpecifications | null;
+
+  categoryId: number;
+  category: ProductCategoryInfo;
+
+  createdAt: string;
+  updatedAt: string;
+
+  images: ProductImage[];
+  colors: ProductColor[];
+};
+
+export type ProductsResponse = {
+  products: Product[];
+
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 };
