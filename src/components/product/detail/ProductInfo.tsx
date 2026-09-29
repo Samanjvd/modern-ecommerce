@@ -1,4 +1,4 @@
-import { Heart, Star } from 'lucide-react';
+import { PackageCheck, Star } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { useState } from 'react';
 
@@ -30,32 +30,30 @@ export function ProductInfo({ product }: ProductInfoProps) {
     product.colors[0],
   );
 
-  const cartItems = useCartStore((state) => state.items ?? []);
-
   const addItem = useCartStore((state) => state.addItem);
 
   const removeItem = useCartStore((state) => state.removeItem);
 
   const updateQuantity = useCartStore((state) => state.updateQuantity);
 
+  const cartItems = useCartStore((state) => state.items);
+
   const isOutOfStock = product.stock <= 0;
 
-  const selectedCartItem = cartItems.find(
-    (item) =>
-      item.product.id === product.id &&
-      item.selectedColor?.value === selectedColor?.value,
-  );
+  const cartQuantity =
+    cartItems.find((item) => item.product.id === product.id)?.quantity ?? 0;
 
-  const cartQuantity = selectedCartItem?.quantity ?? 0;
-
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (isOutOfStock) {
       return;
     }
 
-    addItem(product, 1, selectedColor);
-
-    toast.success('محصول به سبد خرید اضافه شد');
+    try {
+      await addItem(product, 1, selectedColor);
+      toast.success('محصول به سبد خرید اضافه شد');
+    } catch {
+      toast.error('افزودن محصول به سبد خرید انجام نشد');
+    }
   };
 
   return (
@@ -94,7 +92,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
         )}
 
         <div className="mr-auto flex items-center gap-1.5 text-xs text-[var(--color-text-muted)]">
-          <Heart size={16} />
+          <PackageCheck size={16} />
 
           {isOutOfStock ? 'ناموجود' : 'موجود در انبار'}
         </div>

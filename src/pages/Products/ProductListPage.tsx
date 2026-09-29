@@ -13,6 +13,17 @@ type SortValue =
 
 const PRODUCTS_PER_PAGE = 12;
 
+const categoryLabels: Record<string, string> = {
+  mobile: 'موبایل',
+  laptop: 'لپ‌تاپ و کامپیوتر',
+  headphone: 'هدفون و هندزفری',
+  smartwatch: 'ساعت هوشمند',
+  camera: 'دوربین',
+  accessories: 'لوازم جانبی',
+  gaming: 'گیمینگ',
+  home: 'خانه',
+};
+
 const getInitialPrice = (items: Product[]): [number, number] => {
   if (!items.length) {
     return [0, 0];
@@ -59,21 +70,40 @@ export function ProductListPage() {
   const [page, setPage] = useState(1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  const effectiveFilters = useMemo(() => {
+    const hasLoadedPrice = initialPrice[0] !== 0 || initialPrice[1] !== 0;
+    const hasSelectedPrice = filters.price[0] !== 0 || filters.price[1] !== 0;
+
+    if (hasLoadedPrice && !hasSelectedPrice) {
+      return {
+        ...filters,
+        price: initialPrice,
+      };
+    }
+
+    return filters;
+  }, [filters, initialPrice]);
+
   const filteredProducts = useMemo(() => {
     const result = products.filter((product) => {
       const productPrice = product.discountPrice ?? product.price;
 
-      if (filters.category) {
-        if (product.category.slug !== filters.category) {
+      if (effectiveFilters.category) {
+        if (product.category.slug !== effectiveFilters.category) {
           return false;
         }
       }
 
-      if (productPrice < filters.price[0] || productPrice > filters.price[1]) {
+      if (
+        productPrice < effectiveFilters.price[0] ||
+        productPrice > effectiveFilters.price[1]
+      ) {
         return false;
       }
 
-      for (const [filterId, selectedValues] of Object.entries(filters.values)) {
+      for (const [filterId, selectedValues] of Object.entries(
+        effectiveFilters.values,
+      )) {
         if (!selectedValues.length) continue;
 
         if (filterId === 'colors') {
@@ -144,7 +174,7 @@ export function ProductListPage() {
       default:
         return result.sort((a, b) => b.rating - a.rating);
     }
-  }, [filters, products, sort]);
+  }, [effectiveFilters, products, sort]);
 
   const totalPages = Math.max(
     1,
@@ -167,17 +197,6 @@ export function ProductListPage() {
       setPage(totalPages);
     }
   }, [page, totalPages]);
-
-  const categoryLabels: Record<string, string> = {
-    mobile: 'موبایل',
-    laptop: 'لپ‌تاپ و کامپیوتر',
-    headphone: 'هدفون و هندزفری',
-    smartwatch: 'ساعت هوشمند',
-    camera: 'دوربین',
-    accessories: 'لوازم جانبی',
-    gaming: 'گیمینگ',
-    home: 'خانه',
-  };
 
   const activeFilters = useMemo(() => {
     const categoryFilter = filters.category
@@ -290,7 +309,7 @@ export function ProductListPage() {
           <div className="sticky top-20 h-fit max-h-[100vh-2rem]">
             <ProductFilters
               products={products}
-              value={filters}
+              value={effectiveFilters}
               onChange={setFilters}
             />
           </div>
@@ -460,7 +479,7 @@ export function ProductListPage() {
           <div className="absolute inset-y-0 right-0 flex w-[88%] max-w-sm animate-[slideIn_0.3s_ease-out] flex-col bg-[var(--color-background)] p-3 shadow-2xl">
             <ProductFilters
               products={products}
-              value={filters}
+              value={effectiveFilters}
               onChange={setFilters}
               onClose={() => setMobileFiltersOpen(false)}
             />

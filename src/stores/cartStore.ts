@@ -11,6 +11,7 @@ import {
 
 import type { CartItem } from '@/types/cart';
 import type { Product, ProductColor } from '@/types/Product';
+import { useAuthStore } from './auth.store';
 
 type CartState = {
   items: CartItem[];
@@ -46,8 +47,14 @@ const isSameCartItem = (
   productId: number,
   colorValue?: string,
 ) => {
+  if (item.product.id !== productId) {
+    return false;
+  }
+
   return (
-    item.product.id === productId && item.selectedColor?.value === colorValue
+    !colorValue ||
+    !item.selectedColor ||
+    item.selectedColor.value === colorValue
   );
 };
 
@@ -61,7 +68,7 @@ export const useCartStore = create<CartState>()(
       syncing: false,
 
       loadCart: async () => {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = useAuthStore.getState().accessToken;
 
         if (!accessToken) {
           return;
@@ -208,7 +215,7 @@ export const useCartStore = create<CartState>()(
         });
 
         try {
-          if (localStorage.getItem('accessToken')) {
+          if (useAuthStore.getState().accessToken) {
             await clearCartApi();
           }
 
@@ -238,7 +245,7 @@ export const useCartStore = create<CartState>()(
     }),
 
     {
-      name: 'zanbilak-cart',
+      name: 'zanbilak-cart-v3',
     },
   ),
 );
