@@ -1,8 +1,9 @@
 import { ChevronLeft, ChevronRight, Filter, ListFilter, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { useProducts } from '@/hooks/useProducts';
-import type { Product } from '@/types/Product';
+import type { Product, ProductCategory } from '@/types/Product';
 import { type FilterState } from '@/data/productFilterConfigs';
 import { ProductCard } from '@/components/product/ProductCard';
 import { ProductFilters } from '@/components/product/ProductFilters';
@@ -51,9 +52,17 @@ const getProductValue = (product: Product, key: string): unknown => {
 };
 
 export function ProductListPage() {
+  const [searchParams] = useSearchParams();
+  const querySearch = searchParams.get('search')?.trim() || undefined;
+  const queryCategory =
+    (searchParams.get('category') as ProductCategory | null) ?? undefined;
+  const querySort = searchParams.get('sort') as SortValue | null;
+
   const { data, isLoading, isError } = useProducts({
     page: 1,
     limit: 50,
+    search: querySearch,
+    category: queryCategory,
   });
 
   const products = useMemo(() => data?.products ?? [], [data?.products]);
@@ -61,12 +70,12 @@ export function ProductListPage() {
   const initialPrice = useMemo(() => getInitialPrice(products), [products]);
 
   const [filters, setFilters] = useState<FilterState>({
-    category: undefined,
+    category: queryCategory,
     values: {},
     price: initialPrice,
   });
 
-  const [sort, setSort] = useState<SortValue>('relevant');
+  const [sort, setSort] = useState<SortValue>(querySort ?? 'relevant');
   const [page, setPage] = useState(1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
@@ -190,6 +199,14 @@ export function ProductListPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(1);
   }, [filters, sort]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setFilters((current) => ({ ...current, category: queryCategory }));
+    if (querySort) {
+      setSort(querySort);
+    }
+  }, [queryCategory, querySort]);
 
   useEffect(() => {
     if (page > totalPages) {

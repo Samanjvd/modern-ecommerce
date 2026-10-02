@@ -6,6 +6,7 @@ import {
   getUserProfileApi,
   updateUserProfileApi,
 } from '@/api/user.api';
+import { uploadImageApi } from '@/api/upload.api';
 import { Button } from '@/components/ui/Button';
 import { useAuthStore } from '@/stores/auth.store';
 
@@ -15,6 +16,7 @@ export default function ProfilePage() {
   const [name, setName] = useState(currentUser?.name ?? '');
   const [phone, setPhone] = useState('');
   const [avatar, setAvatar] = useState('');
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -40,10 +42,13 @@ export default function ProfilePage() {
     event.preventDefault();
     setLoading(true);
     try {
+      const uploadedAvatar = avatarFile
+        ? (await uploadImageApi(avatarFile)).url
+        : avatar;
       const { user } = await updateUserProfileApi({
         name,
         phone,
-        ...(avatar ? { avatar } : {}),
+        ...(uploadedAvatar ? { avatar: uploadedAvatar } : {}),
       });
       setUser({
         id: user.id,
@@ -77,13 +82,17 @@ export default function ProfilePage() {
 
   return (
     <main className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8">
-      <h1 className="text-2xl font-bold text-[var(--color-text)]">
-        حساب کاربری
-      </h1>
+      <div className="rounded-3xl bg-gradient-to-l from-[var(--color-primary)] to-[var(--color-primary-dark)] p-6 text-white shadow-lg md:p-8">
+        <p className="text-sm text-white/75">پنل شخصی زنبیلک</p>
+        <h1 className="mt-2 text-2xl font-black md:text-3xl">حساب کاربری</h1>
+        <p className="mt-2 text-sm text-white/80">
+          اطلاعات حساب و امنیت پروفایلت را مدیریت کن.
+        </p>
+      </div>
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <form
           onSubmit={saveProfile}
-          className="space-y-4 rounded-2xl border bg-white p-6"
+          className="space-y-4 rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-sm)]"
         >
           <h2 className="text-lg font-bold">اطلاعات شخصی</h2>
           <input
@@ -104,19 +113,37 @@ export default function ProfilePage() {
             placeholder="شماره موبایل"
             className="h-11 w-full rounded-xl border px-3"
           />
+          {(avatar || avatarFile) && (
+            <img
+              src={avatarFile ? URL.createObjectURL(avatarFile) : avatar}
+              alt="پیش‌نمایش تصویر پروفایل"
+              className="h-20 w-20 rounded-2xl object-cover ring-2 ring-[var(--color-primary-light)]"
+            />
+          )}
           <input
             value={avatar}
             onChange={(e) => setAvatar(e.target.value)}
             placeholder="آدرس تصویر پروفایل"
             className="h-11 w-full rounded-xl border px-3"
           />
+          <label className="block text-sm">
+            یا انتخاب تصویر پروفایل
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(event) =>
+                setAvatarFile(event.target.files?.[0] ?? null)
+              }
+              className="mt-2 block w-full rounded-xl border p-2 text-sm"
+            />
+          </label>
           <Button type="submit" variant="primary" disabled={loading}>
             ذخیره اطلاعات
           </Button>
         </form>
         <form
           onSubmit={savePassword}
-          className="space-y-4 rounded-2xl border bg-white p-6"
+          className="space-y-4 rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] p-6 shadow-[var(--shadow-sm)]"
         >
           <h2 className="text-lg font-bold">تغییر رمز عبور</h2>
           <input

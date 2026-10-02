@@ -27,6 +27,11 @@
 
 html {
   direction: rtl;
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {

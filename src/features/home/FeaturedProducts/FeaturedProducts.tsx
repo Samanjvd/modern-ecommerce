@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Button } from '@/components/ui/Button';
 import { useProducts } from '@/hooks/useProducts';
+import { Link } from 'react-router-dom';
 
 export function FeaturedProducts() {
   const { data } = useProducts({
@@ -74,10 +75,12 @@ export function FeaturedProducts() {
         ))}
 
         <div className="flex w-[75%] shrink-0 items-center justify-center sm:w-[42%] md:w-[31%] lg:w-[23%] xl:w-[19%]">
-          <Button type="button" variant="outline" className="h-12 gap-2 px-6">
-            مشاهده همه
-            <ChevronLeft size={18} />
-          </Button>
+          <Link to="/products" className="inline-flex">
+            <Button type="button" variant="outline" className="h-12 gap-2 px-6">
+              مشاهده همه
+              <ChevronLeft size={18} />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

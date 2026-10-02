@@ -10,12 +10,15 @@ import {
   type Category,
 } from '@/api/category.api';
 import { Button } from '@/components/ui/Button';
+import { uploadImageApi } from '@/api/upload.api';
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [image, setImage] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   async function load() {
     const { categories: result } = await getCategoriesApi();
@@ -31,13 +34,24 @@ export default function CategoriesPage() {
     setName('');
     setSlug('');
     setEditingId(null);
+    setImage('');
+    setImageFile(null);
   }
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
     try {
-      if (editingId) await updateCategoryApi(editingId, { name, slug });
-      else await createCategoryApi({ name, slug });
+      const imageUrl = imageFile
+        ? (await uploadImageApi(imageFile)).url
+        : image;
+      if (editingId)
+        await updateCategoryApi(editingId, {
+          name,
+          slug,
+          image: imageUrl || undefined,
+        });
+      else
+        await createCategoryApi({ name, slug, image: imageUrl || undefined });
       reset();
       await load();
       toast.success('دسته‌بندی ذخیره شد');
@@ -76,6 +90,15 @@ export default function CategoriesPage() {
             required
           />
         </label>
+        <label className="w-full text-sm">
+          تصویر دسته‌بندی
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(event) => setImageFile(event.target.files?.[0] ?? null)}
+            className="mt-2 block w-full rounded-xl border p-2 text-sm"
+          />
+        </label>
         <label className="flex-1 text-sm">
           Slug
           <input
@@ -100,6 +123,7 @@ export default function CategoriesPage() {
           <thead className="border-b bg-gray-50">
             <tr>
               <th className="px-5 py-4">نام</th>
+              <th className="px-5 py-4">تصویر</th>
               <th className="px-5 py-4">Slug</th>
               <th className="px-5 py-4">عملیات</th>
             </tr>
@@ -108,6 +132,17 @@ export default function CategoriesPage() {
             {categories.map((category) => (
               <tr key={category.id} className="border-b last:border-0">
                 <td className="px-5 py-4">{category.name}</td>
+                <td className="px-5 py-4">
+                  {category.image ? (
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="h-10 w-10 rounded-lg object-cover"
+                    />
+                  ) : (
+                    '—'
+                  )}
+                </td>
                 <td className="px-5 py-4 text-sm text-gray-500">
                   {category.slug}
                 </td>
@@ -120,6 +155,7 @@ export default function CategoriesPage() {
                       setEditingId(category.id);
                       setName(category.name);
                       setSlug(category.slug);
+                      setImage(category.image ?? '');
                     }}
                   >
                     <Pencil size={16} />

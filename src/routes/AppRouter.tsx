@@ -22,6 +22,7 @@ import OrderDetailPage from '@/pages/account/OrderDetailPage';
 import AdminCategoriesPage from '@/pages/admin/CategoriesPage';
 import AdminOrdersPage from '@/pages/admin/OrdersPage';
 import AdminUsersPage from '@/pages/admin/UsersPage';
+import BlogPage from '@/pages/Blog/BlogPage';
 
 function PlaceholderPage({ title }: { title: string }) {
   return (
@@ -102,12 +103,9 @@ export function AppRouter() {
               element={<PlaceholderPage title="تماس با ما" />}
             />
 
-            <Route path="/blog" element={<PlaceholderPage title="وبلاگ" />} />
+            <Route path="/blog" element={<BlogPage />} />
 
-            <Route
-              path="/blog/:slug"
-              element={<PlaceholderPage title="مقاله" />}
-            />
+            <Route path="/blog/:slug" element={<BlogPage />} />
 
             <Route
               path="/faq"

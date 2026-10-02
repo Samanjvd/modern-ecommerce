@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/product.routes.js';
@@ -17,22 +19,35 @@ import paymentRoutes from './routes/payment.route.js';
 import reviewRouter from './routes/review.route.js';
 import adminUserRouter from './routes/admin/user.route.js';
 import dashboardRouter from './routes/admin/dashboard.route.js';
+import uploadRoutes from './routes/upload.route.js';
 
 dotenv.config();
 
+const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
+
 export const app = express();
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: {
+      policy: 'cross-origin',
+    },
+  }),
+);
 
 app.use(
   cors({
-    origin: 'http://127.0.0.1:5173',
+    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
     credentials: true,
   }),
 );
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(
+  '/uploads',
+  express.static(path.resolve(currentDirectory, '../uploads')),
+);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -53,3 +68,4 @@ app.use('/api', reviewRouter);
 
 app.use('/api/admin/users', adminUserRouter);
 app.use('/api/admin/dashboard', dashboardRouter);
+app.use('/api/uploads', uploadRoutes);

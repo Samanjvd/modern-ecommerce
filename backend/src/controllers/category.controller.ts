@@ -73,7 +73,7 @@ export async function createCategory(
   res: Response,
 ) {
   try {
-    const { name, slug } = req.body;
+    const { name, slug, image } = req.body;
 
     const exists = await prisma.category.findUnique({
       where: {
@@ -91,6 +91,7 @@ export async function createCategory(
       data: {
         name,
         slug,
+        ...(image !== undefined && { image }),
       },
     });
 
@@ -132,7 +133,7 @@ export async function updateCategory(
       });
     }
 
-    const { name, slug } = req.body;
+    const { name, slug, image } = req.body;
 
     if (slug !== undefined) {
       const duplicateSlug = await prisma.category.findUnique({
@@ -161,6 +162,7 @@ export async function updateCategory(
         ...(slug !== undefined && {
           slug,
         }),
+        ...(image !== undefined && { image }),
       },
     });
 

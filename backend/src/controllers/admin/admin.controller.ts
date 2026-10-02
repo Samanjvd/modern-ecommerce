@@ -167,8 +167,8 @@ export async function updateProduct(
       isFeatured,
       categoryId,
       specifications,
-      // image,
-      // colors,
+      image,
+      colors,
     } = req.body;
 
     if (categoryId !== undefined) {
@@ -229,6 +229,21 @@ export async function updateProduct(
 
         ...(specifications !== undefined && {
           specifications: specifications as Prisma.InputJsonValue,
+        }),
+        ...(image !== undefined && {
+          images: {
+            deleteMany: {},
+            ...(image ? { create: [{ url: image }] } : {}),
+          },
+        }),
+        ...(colors !== undefined && {
+          colors: {
+            deleteMany: {},
+            create: colors.map((color) => ({
+              name: color.name,
+              value: color.value,
+            })),
+          },
         }),
       },
     });

@@ -2,7 +2,7 @@ import { CalendarDays } from 'lucide-react';
 import { useRef } from 'react';
 
 import { blogPosts } from '@/data/BlogPosts';
-import { Button } from '@/components/ui/Button';
+import { Link } from 'react-router-dom';
 
 export function BlogSection() {
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -63,14 +63,12 @@ export function BlogSection() {
           </p>
         </div>
 
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="text-xs text-[var(--color-primary)]"
+        <Link
+          to="/blog"
+          className="inline-flex h-9 items-center rounded-[var(--radius-md)] px-3 text-xs text-[var(--color-primary)] transition hover:bg-[var(--color-primary-light)]"
         >
           نمایش همه
-        </Button>
+        </Link>
       </div>
 
       <div
@@ -82,8 +80,10 @@ export function BlogSection() {
         className="flex w-full cursor-grab touch-pan-x scrollbar-none gap-4 overflow-x-auto pb-3 select-none"
       >
         {blogPosts.map((post) => (
-          <article
+          <Link
+            to={`/blog/${post.id}`}
             key={post.id}
+            aria-label={post.title}
             className="group relative h-80 w-[85%] min-w-[85%] shrink-0 overflow-hidden rounded-[var(--radius-xl)] sm:w-[55%] sm:min-w-[55%] md:w-[40%] md:min-w-[40%] lg:w-[31%] lg:min-w-[31%] xl:w-[25%] xl:min-w-[25%]"
           >
             <img
@@ -113,7 +113,7 @@ export function BlogSection() {
                 </p>
               </div>
             </div>
-          </article>
+          </Link>
         ))}
       </div>
     </section>

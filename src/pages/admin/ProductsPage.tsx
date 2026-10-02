@@ -21,6 +21,8 @@ type Product = {
     id: number;
     name: string;
   };
+  images?: { id: number; url: string }[];
+  colors?: { id: number; name: string; value: string }[];
 };
 
 export default function ProductsPage() {
@@ -64,11 +66,11 @@ export default function ProductsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between rounded-3xl bg-gradient-to-l from-[var(--color-primary)] to-[var(--color-primary-dark)] p-6 text-white shadow-lg">
         <div>
           <h1 className="text-2xl font-bold">محصولات</h1>
 
-          <p className="mt-1 text-sm text-gray-500">مدیریت محصولات فروشگاه</p>
+          <p className="mt-1 text-sm text-white/75">مدیریت محصولات فروشگاه</p>
         </div>
 
         <Button
@@ -85,7 +87,7 @@ export default function ProductsPage() {
         </Button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
+      <div className="overflow-hidden rounded-3xl border border-[var(--color-border)] bg-[var(--color-surface)] shadow-[var(--shadow-sm)]">
         {loading ? (
           <div className="p-8 text-center text-gray-500">
             در حال دریافت محصولات...
@@ -115,12 +117,23 @@ export default function ProductsPage() {
                 {products.map((product) => (
                   <tr key={product.id} className="border-b last:border-0">
                     <td className="px-6 py-4">
-                      <div>
-                        <p className="font-medium">{product.title}</p>
+                      <div className="flex items-center gap-3">
+                        {product.images?.[0]?.url ? (
+                          <img
+                            src={product.images[0].url}
+                            alt={product.title}
+                            className="h-12 w-12 rounded-xl object-cover"
+                          />
+                        ) : (
+                          <div className="h-12 w-12 rounded-xl bg-gray-100" />
+                        )}
+                        <div>
+                          <p className="font-medium">{product.title}</p>
 
-                        <p className="mt-1 text-xs text-gray-400">
-                          {product.slug}
-                        </p>
+                          <p className="mt-1 text-xs text-gray-400">
+                            {product.slug}
+                          </p>
+                        </div>
                       </div>
                     </td>
 
@@ -185,6 +198,8 @@ export default function ProductsPage() {
                     : '',
                   stock: String(editingProduct.stock),
                   categoryId: String(editingProduct.categoryId),
+                  image: editingProduct.images?.[0]?.url ?? '',
+                  colors: editingProduct.colors ?? [],
                 }
               : undefined
           }

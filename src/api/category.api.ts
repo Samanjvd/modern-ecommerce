@@ -4,6 +4,7 @@ export type Category = {
   id: number;
   name: string;
   slug: string;
+  image?: string | null;
   createdAt?: string;
   updatedAt?: string;
   products?: unknown[];
@@ -14,7 +15,11 @@ export async function getCategoriesApi() {
   return response.data;
 }
 
-export async function createCategoryApi(data: { name: string; slug: string }) {
+export async function createCategoryApi(data: {
+  name: string;
+  slug: string;
+  image?: string;
+}) {
   const response = await api.post<{ category: Category }>(
     '/admin/categories',
     data,
@@ -24,7 +29,7 @@ export async function createCategoryApi(data: { name: string; slug: string }) {
 
 export async function updateCategoryApi(
   id: number,
-  data: { name?: string; slug?: string },
+  data: { name?: string; slug?: string; image?: string },
 ) {
   const response = await api.patch<{ category: Category }>(
     `/admin/categories/${id}`,

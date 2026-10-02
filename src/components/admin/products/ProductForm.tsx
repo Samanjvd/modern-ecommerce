@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { api } from '@/api/axios';
+import { uploadImageApi } from '@/api/upload.api';
 
 type ProductColor = {
   name: string;
@@ -74,6 +75,7 @@ export default function ProductForm({
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -155,6 +157,10 @@ export default function ProductForm({
     try {
       setLoading(true);
 
+      const imageUrl = imageFile
+        ? (await uploadImageApi(imageFile)).url
+        : form.image;
+
       const payload = {
         title: form.title,
         slug: form.slug,
@@ -175,7 +181,7 @@ export default function ProductForm({
         specifications: form.specifications
           ? JSON.parse(form.specifications)
           : undefined,
-        image: form.image || undefined,
+        image: imageUrl || undefined,
         colors: form.colors,
       };
 
@@ -286,6 +292,23 @@ export default function ProductForm({
         className="min-h-32 w-full rounded-xl border p-4 outline-none"
       />
 
+      <label className="text-sm md:col-span-2">
+        تصویر محصول
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(event) => setImageFile(event.target.files?.[0] ?? null)}
+          className="mt-2 mb-1 block w-full rounded-sm border p-3 text-sm"
+        />
+        {form.image && (
+          <img
+            src={imageFile ? URL.createObjectURL(imageFile) : form.image}
+            alt="تصویر فعلی محصول"
+            className="mt-3 mb-4 h-24 w-24 rounded-xl object-cover"
+          />
+        )}
+      </label>
+
       <Input
         name="image"
         value={form.image}
@@ -318,6 +341,16 @@ export default function ProductForm({
               onChange={(e) => updateColor(index, 'name', e.target.value)}
               placeholder="نام رنگ"
               className="flex-1 py-5"
+            />
+
+            <input
+              type="color"
+              value={
+                /^#[0-9A-Fa-f]{6}$/.test(color.value) ? color.value : '#000000'
+              }
+              onChange={(e) => updateColor(index, 'value', e.target.value)}
+              aria-label={`انتخاب رنگ ${index + 1}`}
+              className="h-12 w-16 cursor-pointer rounded-lg border p-1"
             />
 
             <Input

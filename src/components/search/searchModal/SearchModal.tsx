@@ -6,6 +6,7 @@ type SearchModalProps = {
   open: boolean;
   value: string;
   onChange: (value: string) => void;
+  onSubmit: () => void;
   onClose: () => void;
 };
 
@@ -15,6 +16,7 @@ export function SearchModal({
   open,
   value,
   onChange,
+  onSubmit,
   onClose,
 }: SearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -72,6 +74,9 @@ export function SearchModal({
               type="text"
               value={value}
               onChange={(event) => onChange(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') onSubmit();
+              }}
               placeholder="دنبال چی هستی؟"
               aria-label="جستجوی محصولات"
               className="h-11 w-full rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] pr-11 pl-10 text-sm transition-all outline-none placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:ring-3 focus:ring-[var(--color-primary-light)]"
@@ -121,7 +126,10 @@ export function SearchModal({
                   key={search}
                   type="button"
                   variant="ghost"
-                  onClick={() => onChange(search)}
+                  onClick={() => {
+                    onChange(search);
+                    onSubmit();
+                  }}
                   className="h-auto w-full justify-start gap-3 rounded-none border-b border-[var(--color-border)] py-4 text-right text-sm font-normal text-[var(--color-text)]"
                 >
                   <Clock3
@@ -149,7 +157,7 @@ export function SearchModal({
             </h2>
 
             <div className="mt-6 rounded-[var(--radius-md)] bg-[var(--color-surface)] p-5 text-center text-sm text-[var(--color-text-muted)]">
-              در حال آماده‌سازی نتایج جستجو...
+              برای دیدن نتایج واقعی، جستجو را ثبت کن.
             </div>
           </section>
         )}

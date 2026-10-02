@@ -78,6 +78,13 @@ export function UserMenu() {
               src={user.avatar}
               alt={displayName}
               className="h-full w-full object-cover"
+              onLoad={() => {
+                console.log('Avatar loaded:', user.avatar);
+              }}
+              onError={(event) => {
+                console.error('Avatar failed:', user.avatar);
+                console.error(event.currentTarget);
+              }}
             />
           ) : (
             <UserRound size={21} />

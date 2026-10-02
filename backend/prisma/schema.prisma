@@ -37,8 +37,9 @@ enum UserRole {
 model Category {
   id Int @id @default(autoincrement())
 
-  name String
-  slug String @unique
+  name  String
+  slug  String  @unique
+  image String?
 
   products Product[]
 

@@ -1,6 +1,7 @@
 import { ChevronLeft } from 'lucide-react';
 
 import { categories } from '@/data/categories';
+import { Link } from 'react-router-dom';
 
 export function CategorySection() {
   return (
@@ -10,20 +11,20 @@ export function CategorySection() {
           دسته‌بندی‌ها
         </h2>
 
-        <a
-          href="/categories"
+        <Link
+          to="/products"
           className="flex items-center gap-1 text-sm font-medium text-[var(--color-primary)]"
         >
           مشاهده همه
           <ChevronLeft size={16} />
-        </a>
+        </Link>
       </div>
 
       <div className="grid grid-cols-4 gap-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
         {categories.map((category) => (
-          <a
+          <Link
             key={category.id}
-            href={category.href}
+            to={category.href}
             className="group flex flex-col items-center gap-3"
           >
             <div className="aspect-square w-full max-w-28 overflow-hidden rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] transition-all duration-300 group-hover:-translate-y-1 group-hover:border-[var(--color-primary)] group-hover:shadow-[var(--shadow-md)]">
@@ -37,7 +38,7 @@ export function CategorySection() {
             <span className="text-center text-xs font-medium text-[var(--color-text)] md:text-sm">
               {category.title}
             </span>
-          </a>
+          </Link>
         ))}
       </div>
     </section>
