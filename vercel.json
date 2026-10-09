@@ -1,3 +1,4 @@
+
 {
   "version": 2,
   "buildCommand": "yarn --cwd frontend install --frozen-lockfile && yarn --cwd backend install --frozen-lockfile && yarn --cwd backend prisma generate && yarn --cwd frontend build",
@@ -9,6 +10,14 @@
     }
   },
   "rewrites": [
+    {
+      "source": "/api",
+      "destination": "/api"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api"
+    },
     {
       "source": "/((?!api(?:/|$)).*)",
       "destination": "/index.html"
