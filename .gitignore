@@ -24,3 +24,7 @@ build/
 *.njsproj
 *.sln
 *.sw?
+
+.vercel
+
+backend/uploads

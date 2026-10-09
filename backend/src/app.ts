@@ -27,6 +27,10 @@ const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export const app = express();
 
+app.get('/api/health', (_request, response) => {
+  response.json({ status: 'ok' });
+});
+
 app.use(
   helmet({
     crossOriginResourcePolicy: {
@@ -37,7 +41,25 @@ app.use(
 
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: (origin, callback) => {
+      if (!origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+        return callback(null, true);
+      }
+
+      const allowedOrigin = process.env.FRONTEND_URL;
+      if (allowedOrigin && origin === allowedOrigin) {
+        return callback(null, true);
+      }
+
+      const vercelOrigin = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : undefined;
+      if (vercelOrigin && origin === vercelOrigin) {
+        return callback(null, true);
+      }
+
+      return callback(null, false);
+    },
     credentials: true,
   }),
 );
