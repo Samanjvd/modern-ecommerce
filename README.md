@@ -102,6 +102,15 @@ modern-ecommerce/
 - **Website:** [Live Demo](https://modern-ecommerce-ashen.vercel.app)
 - **API Health:** [API Health Check](https://modern-ecommerce-ashen.vercel.app/api/health)
 
+username-admin:
+```text
+admin@test.com
+```
+password-admin:
+```text
+123456
+```
+
 Replace the placeholder URLs with the actual deployment URLs when available.
 
 ## Environment Variables
