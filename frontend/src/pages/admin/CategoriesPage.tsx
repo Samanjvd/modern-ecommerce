@@ -11,6 +11,9 @@ import {
 } from '@/api/category.api';
 import { Button } from '@/components/ui/Button';
 import { uploadImageApi } from '@/api/upload.api';
+import { Pagination } from '@/components/ui/Pagination/Pagination';
+
+const PAGE_SIZE = 10;
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -19,11 +22,24 @@ export default function CategoriesPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [image, setImage] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [page, setPage] = useState(1);
 
   async function load() {
     const { categories: result } = await getCategoriesApi();
     setCategories(result);
+    setPage(1);
   }
+
+  const totalPages = Math.max(1, Math.ceil(categories.length / PAGE_SIZE));
+  const visibleCategories = categories.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -122,6 +138,7 @@ export default function CategoriesPage() {
         <table className="w-full text-right">
           <thead className="border-b bg-gray-50">
             <tr>
+              <th className="px-5 py-4">ردیف</th>
               <th className="px-5 py-4">نام</th>
               <th className="px-5 py-4">تصویر</th>
               <th className="px-5 py-4">Slug</th>
@@ -129,8 +146,11 @@ export default function CategoriesPage() {
             </tr>
           </thead>
           <tbody>
-            {categories.map((category) => (
+            {visibleCategories.map((category, index) => (
               <tr key={category.id} className="border-b last:border-0">
+                <td className="px-5 py-4 text-sm text-gray-500">
+                  {((page - 1) * PAGE_SIZE + index + 1).toLocaleString('fa-IR')}
+                </td>
                 <td className="px-5 py-4">{category.name}</td>
                 <td className="px-5 py-4">
                   {category.image ? (
@@ -173,6 +193,11 @@ export default function CategoriesPage() {
             ))}
           </tbody>
         </table>
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

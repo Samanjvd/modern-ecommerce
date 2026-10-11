@@ -3,6 +3,9 @@ import { toast } from 'react-hot-toast';
 
 import { getAdminOrdersApi, updateOrderStatusApi } from '@/api/admin.api';
 import type { Order, OrderStatus } from '@/api/order.api';
+import { Pagination } from '@/components/ui/Pagination/Pagination';
+
+const PAGE_SIZE = 10;
 
 const statuses: OrderStatus[] = [
   'PENDING',
@@ -15,10 +18,20 @@ const statuses: OrderStatus[] = [
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   async function load() {
     setOrders((await getAdminOrdersApi()).orders);
+    setPage(1);
   }
+
+  const totalPages = Math.max(1, Math.ceil(orders.length / PAGE_SIZE));
+  const visibleOrders = orders.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     load()
@@ -54,6 +67,7 @@ export default function OrdersPage() {
         <table className="w-full min-w-[800px] text-right">
           <thead className="border-b bg-gray-50">
             <tr>
+              <th className="px-5 py-4">ردیف</th>
               <th className="px-5 py-4">شماره</th>
               <th className="px-5 py-4">کاربر</th>
               <th className="px-5 py-4">مبلغ</th>
@@ -62,8 +76,11 @@ export default function OrdersPage() {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {visibleOrders.map((order, index) => (
               <tr key={order.id} className="border-b last:border-0">
+                <td className="px-5 py-4 text-sm text-gray-500">
+                  {((page - 1) * PAGE_SIZE + index + 1).toLocaleString('fa-IR')}
+                </td>
                 <td className="px-5 py-4 font-bold">#{order.id}</td>
                 <td className="px-5 py-4">
                   {order.user?.name || order.user?.email || '-'}
@@ -93,6 +110,11 @@ export default function OrdersPage() {
             ))}
           </tbody>
         </table>
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

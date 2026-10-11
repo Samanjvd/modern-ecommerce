@@ -7,6 +7,9 @@ import ProductForm from '@/components/admin/products/ProductForm';
 import { Button } from '@/components/ui/Button';
 import { api } from '@/api/axios';
 import { Modal } from '@/components/ui/Modal/Modal';
+import { Pagination } from '@/components/ui/Pagination/Pagination';
+
+const PAGE_SIZE = 15;
 
 type Product = {
   id: number;
@@ -30,14 +33,18 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [page, setPage] = useState(1);
 
   async function fetchProducts() {
     try {
       setLoading(true);
 
-      const response = await api.get('/products');
+      const response = await api.get('/products', {
+        params: { page: 1, limit: 50, sort: 'newest' },
+      });
 
       setProducts(response.data.products ?? []);
+      setPage(1);
     } catch {
       toast.error('دریافت محصولات انجام نشد');
     } finally {
@@ -45,10 +52,21 @@ export default function ProductsPage() {
     }
   }
 
+  const totalPages = Math.max(1, Math.ceil(products.length / PAGE_SIZE));
+  const visibleProducts = products.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE,
+  );
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
 
   async function handleDelete(id: number) {
     const confirmed = window.confirm('آیا از حذف این محصول مطمئن هستید؟');
@@ -101,6 +119,8 @@ export default function ProductsPage() {
             <table className="w-full text-right">
               <thead className="border-b bg-gray-50">
                 <tr>
+                  <th className="px-6 py-4 text-sm font-medium">ردیف</th>
+
                   <th className="px-6 py-4 text-sm font-medium">محصول</th>
 
                   <th className="px-6 py-4 text-sm font-medium">برند</th>
@@ -114,8 +134,13 @@ export default function ProductsPage() {
               </thead>
 
               <tbody>
-                {products.map((product) => (
+                {visibleProducts.map((product, index) => (
                   <tr key={product.id} className="border-b last:border-0">
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {((page - 1) * PAGE_SIZE + index + 1).toLocaleString(
+                        'fa-IR',
+                      )}
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         {product.images?.[0]?.url ? (
@@ -177,6 +202,13 @@ export default function ProductsPage() {
               </tbody>
             </table>
           </div>
+        )}
+        {!loading && products.length > 0 && (
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         )}
       </div>
       <Modal

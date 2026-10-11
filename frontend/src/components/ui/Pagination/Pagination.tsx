@@ -46,7 +46,7 @@ export function Pagination({
   };
 
   return (
-    <div className="mt-10 flex items-center justify-center gap-2">
+    <div className="mt-10 mb-4 flex items-center justify-center gap-2">
       <button
         type="button"
         disabled={page === 1}
